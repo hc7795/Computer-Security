@@ -12,9 +12,20 @@ import java.io.FileReader;
 public class SecureSystem {
 	//HashMap<String, Integer> subject;	
 	//HashMap<String, Integer> Lyle;
-	
+
 	public static void main(String[] args) throws IOException{
 		Scanner reader = new Scanner(new FileInputStream(args[0]));
+		while(reader.hasNext()) {
+			String line = reader.next();
+			String[] words = instruction.split("\\s+");
+			if(words[0].equals("write"))
+				//write method
+			else if(words[0].equals("read"))
+				//read method
+			else
+				//illegal instructions?
+			
+		}
 		/*
 		SecurityLevel sl = new SecurityLevel();
 		SecurityLevel low = sl.LOW;
@@ -28,7 +39,7 @@ public class SecureSystem {
 		//sys.getReferenceMonitor().createNewObject("Lobj", low);
 		//sys.getReferenceMonitor().createNewObject("Hobj", low);
 		*/
-		 
+
     }
 	/*
 	public void createSubject(String subjectName, SecurityLevel level) {
