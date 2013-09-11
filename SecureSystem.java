@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.io.FileReader;
 
 public class SecureSystem {
-	HashMap<String, Integer> subject;	
-	//HashMap<String, Integer> Lyle;
+	HashMap<String, SecurityLevel> subject;	
 
 	public static void main(String[] args) throws IOException{
 		/*
@@ -31,7 +30,7 @@ public class SecureSystem {
 		SecurityLevel low = SecurityLevel.LOW;
 		SecurityLevel high = SecurityLevel.HIGH;
 		
-		sys = new SecureSystem();
+		SecureSystem sys = new SecureSystem();
 		
 		sys.createSubject("Lyle", low);
 		sys.createSubject("Hal", high);
@@ -50,16 +49,14 @@ public class SecureSystem {
 }
 
 class SecurityLevel {
-	final static int LOW = 0;
-	final static int HIGH = 1;
-	private int level;	
-	/*
+	final static SecurityLevel LOW;
+	final static SecurityLevel HIGH;
+	private Integer level;	
+	
+	//final static SecurityLevel Low = new SecurityLevel(0);
+	
 	public SecurityLevel (int level) {
 		System.out.println("a constructor.");
 		this.level = level;
-	}
-	*/
-	int getLevel () {
-		return this.level;
 	}
 }
