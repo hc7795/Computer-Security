@@ -36,15 +36,15 @@ public class SecureSystem {
 			
 		}
 		
-		SecurityLevel low = SecurityLevel.LOW;
-		SecurityLevel high = SecurityLevel.HIGH;
+		SecurityLevel low = new SecurityLevel(0);
+		SecurityLevel high = new SecurityLevel(1);
 		
 		
 		sys.createSubject("Lyle", low);
 		sys.createSubject("Hal", high);
 		
 		sys.createObject("LObj", low);
-		sys.createObject("HObj", low);
+		sys.createObject("HObj", high);
 		/*
 		//sys.getReferenceMonitor().createNewObject("Lobj", low);
 		//sys.getReferenceMonitor().createNewObject("Hobj", low);
@@ -63,7 +63,7 @@ public class SecureSystem {
 	//}
 
 	public void read(String subject, String object) {
-		if((int) this.subject.get(subject) > (int) this.object.get(object)) {
+		if(this.subject.get(subject).lev() > this.object.get(object).lev()) {
 			int objVal = this.objectValue.get(object);
 			this.subjectTemp.put(subject, objVal);
 		}
@@ -71,14 +71,18 @@ public class SecureSystem {
 }
 
 class SecurityLevel {
-	final static SecurityLevel LOW;
-	final static SecurityLevel HIGH;
-	private Integer level;	
+	//final static SecurityLevel LOW;
+	//final static SecurityLevel HIGH;
+	private final Integer lev;	
 	
 	//final static SecurityLevel Low = new SecurityLevel(0);
 	
-	public SecurityLevel (int level) {
+	public SecurityLevel (int lev) {
 		System.out.println("a constructor.");
-		this.level = level;
+		this.lev = lev;
+	}
+	
+	Integer getLev() {
+		return this.lev;
 	}
 }
