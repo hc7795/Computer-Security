@@ -7,6 +7,7 @@ hc7795
 import java.util.*;
 import java.io.IOException;
 import java.io.FileReader;
+import java.io.FileInputStream;
 
 public class SecureSystem {
 	HashMap<String, SecurityLevel> subject;	
@@ -19,7 +20,7 @@ public class SecureSystem {
 		SecureSystem sys = new SecureSystem();
 		
 		while(reader.hasNext()) {
-			String line = reader.next();
+			String instruction = reader.next();
 			String[] words = instruction.split("\\s+");
 			if(words[0].equals("read")) {
 				//write method
@@ -28,11 +29,13 @@ public class SecureSystem {
 			}
 			else if(words[0].equals("write"))
 				//read method
+				continue;
 			else
+				continue;
 				//illegal instructions?
 			
 		}
-		/*
+		
 		SecurityLevel low = SecurityLevel.LOW;
 		SecurityLevel high = SecurityLevel.HIGH;
 		
@@ -40,15 +43,15 @@ public class SecureSystem {
 		sys.createSubject("Lyle", low);
 		sys.createSubject("Hal", high);
 		
-		sys.createObject("LObj", 0);
-		sys.createObject("HObj", 0);
-		
+		sys.createObject("LObj", low);
+		sys.createObject("HObj", low);
+		/*
 		//sys.getReferenceMonitor().createNewObject("Lobj", low);
 		//sys.getReferenceMonitor().createNewObject("Hobj", low);
 		*/
 
     }
-	/*
+
 	public void createSubject(String subjectName, SecurityLevel level) {
 		this.subject.put(subjectName, level);
 	}
@@ -58,15 +61,15 @@ public class SecureSystem {
 	
 	//public void createNewObject() {
 	//}
-	*/
+
 	public void read(String subject, String object) {
-		if(this.subject.get(subject) > this.object.get(object)) {
+		if((int) this.subject.get(subject) > (int) this.object.get(object)) {
 			int objVal = this.objectValue.get(object);
 			this.subjectTemp.put(subject, objVal);
 		}
 	}
 }
-/*
+
 class SecurityLevel {
 	final static SecurityLevel LOW;
 	final static SecurityLevel HIGH;
@@ -79,4 +82,3 @@ class SecurityLevel {
 		this.level = level;
 	}
 }
-*/
