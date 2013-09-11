@@ -4,7 +4,6 @@ Assignment1
 Honghui Choi
 hc7795
 */
-//dkTlqkf whsskrp gkrltlfgdj. dksi dlwp akwlakrgkrrlwksgdk. duftalgl gksqjs goqhwk.
 import java.util.*;
 import java.io.IOException;
 import java.io.FileReader;
