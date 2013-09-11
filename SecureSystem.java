@@ -10,10 +10,11 @@ import java.io.IOException;
 import java.io.FileReader;
 
 public class SecureSystem {
-	//HashMap<String, Integer> subject;	
+	HashMap<String, Integer> subject;	
 	//HashMap<String, Integer> Lyle;
 
 	public static void main(String[] args) throws IOException{
+		/*
 		Scanner reader = new Scanner(new FileInputStream(args[0]));
 		while(reader.hasNext()) {
 			String line = reader.next();
@@ -26,10 +27,9 @@ public class SecureSystem {
 				//illegal instructions?
 			
 		}
-		/*
-		SecurityLevel sl = new SecurityLevel();
-		SecurityLevel low = sl.LOW;
-		SecurityLevel high = sl.HIGH;
+		*/
+		SecurityLevel low = SecurityLevel.LOW;
+		SecurityLevel high = SecurityLevel.HIGH;
 		
 		sys = new SecureSystem();
 		
@@ -38,30 +38,28 @@ public class SecureSystem {
 		
 		//sys.getReferenceMonitor().createNewObject("Lobj", low);
 		//sys.getReferenceMonitor().createNewObject("Hobj", low);
-		*/
 
     }
-	/*
+	
 	public void createSubject(String subjectName, SecurityLevel level) {
 		this.subject.put(subjectName, level);
 	}
-	*/
+	
 	//public void createNewObjecy() {
 	//}
 }
-/*
+
 class SecurityLevel {
-	final int LOW = 0;
-	final int HIGH = 1;
+	final static int LOW = 0;
+	final static int HIGH = 1;
 	private int level;	
-	
+	/*
 	public SecurityLevel (int level) {
-		System.out.println("hello, a constructor.");
+		System.out.println("a constructor.");
 		this.level = level;
 	}
-	
+	*/
 	int getLevel () {
 		return this.level;
 	}
 }
-*/
