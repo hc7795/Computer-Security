@@ -27,14 +27,13 @@ public class SecureSystem {
 
 		sys.createNewSubject("Lyle",new int[]{sys.low, 0});
 		sys.createNewSubject("Hal", new int[]{sys.high, 0});
-		sys.createNewObject("Lobj", new int[]{sys.low,  0});
-		sys.createNewObject("Hobj", new int[]{sys.high, 0});
+		sys.createNewObject("LObj", new int[]{sys.low,  0});
+		sys.createNewObject("HObj", new int[]{sys.high, 0});
 		
 
 		while(sc.hasNextLine()) {
-			System.out.println("Entered a while loop");
 			String instruction = sc.nextLine();
-			//System.out.println("instruction = " + instruction);
+			System.out.println("instruction = " + instruction);
 			String[] words = instruction.split("\\s+");
 			boolean isLegalInstruction = sys.legalInstruction(words);
 			
@@ -42,9 +41,9 @@ public class SecureSystem {
 				if(words[0].toLowerCase().equals("read"))
 					sys.read(words[1], words[2]);
 				else if(words[0].toLowerCase().equals("write")) {
-					System.out.println("words[1] = " + words[1]);
-					System.out.println("words[2] = " + words[2]);
-					System.out.println("Integer.parseInt(words[3]) = " + Integer.parseInt(words[3]));
+					//System.out.println("words[1] = " + words[1]);
+					//System.out.println("words[2] = " + words[2]);
+					//System.out.println("Integer.parseInt(words[3]) = " + Integer.parseInt(words[3]));
 					sys.write(words[1], words[2], Integer.parseInt(words[3]));
 				}
 			}
@@ -77,10 +76,13 @@ public class SecureSystem {
 		
 		if(this.subject.get(subject)[0] > this.object.get(object)[0]) 
 			this.subject.get(subject)[1] = this.object.get(object)[1];
+		else
+			this.subject.get(subject)[1] = 0;
 	}
 	public void write(String subject, String object, int value) {
 		System.out.println("entered a write method");
-		
+		//System.out.println("this.subject.get(subject)[0] = " + this.subject.get(subject)[0]);
+		//System.out.println("this.object.get(object)[0] = " + this.object.get(object)[0]);
 		if(this.subject.get(subject)[0] < this.object.get(object)[0])
 			this.object.get(object)[1] = value;
 	}
