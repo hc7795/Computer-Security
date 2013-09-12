@@ -21,21 +21,19 @@ public class SecureSystem {
 
 		while(sc.hasNextLine()) {
 			String instruction = sc.nextLine();
+			//System.out.println("instruction = " + instruction);
 			String[] words = instruction.split("\\s+");
-			legalInstruction(words);
+			boolean isLegalInstruction = sys.legalInstruction(words);
 			
-			if(words.length < 3) {
-				System.out.println("illegal instruction");
+			if(isLegalInstruction) {
+				if(words[0].toLowerCase().equals("read"))
+					sys.read(words[1], words[2]);
+				else if(words[0].toLowerCase().equals("write") && words.length == 4)
+					sys.write(words[1], words[2], Integer.parseInt(words[3]));
 			}
-			else if(words[0].toLowerCase().equals("read")) {
-				//write method
-				sys.read(words[1], words[2]);
-
+			else {
+				System.out.println("illegal");
 			}
-			else if(words[0].toLowerCase().equals("write") && words.length == 4)
-				sys.write(words[1], words[2], Integer.parseInt(words[3]));
-			else
-				System.out.println("illegal instruction");
 		}
 
 		SecurityLevel low = new SecurityLevel(0);
@@ -73,8 +71,16 @@ public class SecureSystem {
 	public void write(String subject, String object, int value) {
 		System.out.println("entered a write method");
 	}
-	pubilc boolean legalInstruction (String[] instruction) {
-	
+	public boolean legalInstruction (String[] instruction) {
+		if(instruction.length < 3 || instruction.length > 4)
+			return false;
+		else if(!(instruction[0].toLowerCase().equals("read") || instruction[0].toLowerCase().equals("write")))
+			return false;
+		else if(!(instruction[0] instanceof String) || !(instruction[1] instanceof String) || !(instruction[2] instanceof String))
+			return false;
+		else if(instruction[0].toLowerCase().equals("write") && instruction.length != 4)
+			return false;
+		return true;
 	}
 }
 
