@@ -40,8 +40,8 @@ public class SecureSystem {
 		SecurityLevel high = new SecurityLevel(1);
 		
 		
-		sys.createSubject("Lyle", low);
-		sys.createSubject("Hal", high);
+		sys.createNewSubject("Lyle", low);
+		sys.createNewSubject("Hal", high);
 		
 		sys.createObject("LObj", low);
 		sys.createObject("HObj", high);
@@ -52,10 +52,10 @@ public class SecureSystem {
 
     }
 
-	public void createSubject(String subjectName, SecurityLevel level) {
+	public void createNewSubject(String subjectName, SecurityLevel level) {
 		this.subject.put(subjectName, level);
 	}
-	public void createObject(String objectName, SecurityLevel level) {
+	public void createNewObject(String objectName, SecurityLevel level) {
 		this.object.put(objectName, level);
 	}
 	
