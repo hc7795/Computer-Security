@@ -56,11 +56,9 @@ public class SecureSystem {
 
 	public void read(String subject, String object) {
 		System.out.println("Entered a read method");
-		/*
-		if(this.subject.get(subject).lev() > this.object.get(object).lev()) {
-			int objVal = this.objectValue.get(object);
-			this.subjectTemp.put(subject, objVal);
-		}*/
+		
+		if(this.subject.get(subject)[0] > this.object.get(object)[0]) 
+			this.subject.get(subject)[1] = this.object.get(object)[1];
 	}
 	public void write(String subject, String object, int value) {
 		System.out.println("entered a write method");
