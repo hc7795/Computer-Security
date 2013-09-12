@@ -9,10 +9,10 @@ import java.io.IOException;
 import java.io.*;
 
 public class SecureSystem {
-	HashMap<String, SecurityLevel> subject;	
-	HashMap<String, SecurityLevel> object;
-	HashMap<String, Integer> subjectTemp;
-	HashMap<String, Integer> objectValue;
+	final int low = 0;
+	final int high = 1;
+	HashMap<String, int[]> subject;	
+	HashMap<String, int[]> object;
 
 	public static void main(String[] args) throws IOException{
 		File reader = new File(args[0]); 
@@ -35,38 +35,32 @@ public class SecureSystem {
 				System.out.println("illegal");
 			}
 		}
+		
+		//SecurityLevel low = new SecurityLevel(0);
+		//SecurityLevel high = new SecurityLevel(1);
+		
+		sys.createNewSubject("Lyle", new int[]{sys.low, 0});
+		sys.createNewSubject("Hal", new int[]{sys.high, 0});
 
-		SecurityLevel low = new SecurityLevel(0);
-		SecurityLevel high = new SecurityLevel(1);
-
-
-		sys.createNewSubject("Lyle", low);
-		sys.createNewSubject("Hal", high);
-
-		sys.createNewObject("LObj", low);
-		sys.createNewObject("HObj", high);
-		/*
-		//sys.getReferenceMonitor().createNewObject("Lobj", low);
-		//sys.getReferenceMonitor().createNewObject("Hobj", low);
-		*/
+		//sys.createNewObject("LObj", [sys.low, 0]);
+		//sys.createNewObject("HObj", [sys.high, 0]);
 
 	}
 
-	public void createNewSubject(String subjectName, SecurityLevel level) {
-		this.subject.put(subjectName, level);
+	public void createNewSubject(String subjectName, int[] levelTemp) {
+		this.subject.put(subjectName, levelTemp);
 	}
-	public void createNewObject(String objectName, SecurityLevel level) {
-		this.object.put(objectName, level);
+	public void createNewObject(String objectName, int[] levelValue) {
+		this.object.put(objectName, levelValue);
 	}
 
 	public void read(String subject, String object) {
 		System.out.println("Entered a read method");
-		/*if(this.subject.get(subject).lev() > this.object.get(object).lev()) {
+		/*
+		if(this.subject.get(subject).lev() > this.object.get(object).lev()) {
 			int objVal = this.objectValue.get(object);
 			this.subjectTemp.put(subject, objVal);
-		}
-		*/
-		
+		}*/
 	}
 	public void write(String subject, String object, int value) {
 		System.out.println("entered a write method");
@@ -89,7 +83,7 @@ public class SecureSystem {
 		return true;
 	}
 }
-
+/*
 class SecurityLevel {
 	private final Integer lev;	
 
@@ -104,3 +98,4 @@ class SecurityLevel {
 		return this.lev;
 	}
 }
+*/
