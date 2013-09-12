@@ -22,6 +22,8 @@ public class SecureSystem {
 		while(sc.hasNextLine()) {
 			String instruction = sc.nextLine();
 			String[] words = instruction.split("\\s+");
+			legalInstruction(words);
+			
 			if(words.length < 3) {
 				System.out.println("illegal instruction");
 			}
@@ -59,9 +61,6 @@ public class SecureSystem {
 		this.object.put(objectName, level);
 	}
 
-	//public void createNewObject() {
-	//}
-
 	public void read(String subject, String object) {
 		System.out.println("Entered a read method");
 		/*
@@ -73,6 +72,9 @@ public class SecureSystem {
 	}
 	public void write(String subject, String object, int value) {
 		System.out.println("entered a write method");
+	}
+	pubilc boolean legalInstruction (String[] instruction) {
+	
 	}
 }
 
