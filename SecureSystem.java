@@ -164,6 +164,7 @@ class InstructionObject {
 
 class ReferenceMonitor{
 	SecureSystem sys = new SecureSystem();
+	ObjectManager om = new ObjectManager();
 	public void takeInstructions(InstructionObject IO) {
 		if(IO.getInstructionType().equals("read"))
 			simpleSecurity(IO.getSubjectName(), IO.getObjectName());
@@ -176,11 +177,11 @@ class ReferenceMonitor{
 	public void simpleSecurity(String subjectName, String objectName){
 		boolean passed = true;
 		if(sys.subject.get(subjectName)[0] >= sys.object.get(objectName)[0]) {
-			executeRead(subjectName, objectName, passed);
+			om.executeRead(subjectName, objectName, passed);
 		}
 		else {
 			passed = false;
-			executeRead(subjectName, objectName, passed);
+			om.executeRead(subjectName, objectName, passed);
 		}
 	}
 	public void starProperty(String subjectName, String objectName, int value){
@@ -189,17 +190,19 @@ class ReferenceMonitor{
 		//System.out.println("containsKey = " + subject.containsKey(subjectName));
 		//System.out.println("this.subject.get(subject)[0] " + Arrays.toString(subject.get(subjectName)));
 		if(sys.subject.get(subjectName)[0] <= sys.object.get(objectName)[0]) {
-			executeWrite(objectName, value);
+			om.executeWrite(objectName, value);
 		}
 	}
 	//ObjectManager()
-	public void executeRead(String subjectName, String objectName, boolean passed){
-		if(passed)
-			sys.subject.get(subjectName)[1] = sys.object.get(objectName)[1];
-		else
-			sys.subject.get(subjectName)[1] = 0;
+	class ObjectManager {
+		public void executeRead(String subjectName, String objectName, boolean passed){
+			if(passed)
+				sys.subject.get(subjectName)[1] = sys.object.get(objectName)[1];
+			else
+				sys.subject.get(subjectName)[1] = 0;
+		}
+		public void executeWrite(String objectName, int value){
+			sys.object.get(objectName)[1] = value;
+		}	
 	}
-	public void executeWrite(String objectName, int value){
-		sys.object.get(objectName)[1] = value;
-	}	
 }
