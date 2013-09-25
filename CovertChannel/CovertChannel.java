@@ -50,6 +50,7 @@ public class CovertChannel {
 		long bitsNum = 0;
 		while(sc.hasNextLine()) {
 			String line = sc.nextLine();
+
 			byte[] bytes = line.getBytes();
 			for(int i = 0; i <bytes.length; i++) {
 				bitsNum += 8;
@@ -115,7 +116,7 @@ public class CovertChannel {
 	public void run(String subjectName, BufferedWriter writer) throws IOException{ //convert bits to char and write to the output file.
 		if(subjectName.equals("lyle")) {
 			this.strByte += Integer.toString(this.subject.get(subjectName)[1]);
-			if(strByte.length() == 8) { //convert binary to char 
+			if(strByte.length() == 8) { //convert binary to char
 				int k = Integer.parseInt(strByte.substring(0, 8), 2);
 				writer.write((char) k);
 				this.strByte = "";
