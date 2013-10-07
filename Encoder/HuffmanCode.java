@@ -36,18 +36,24 @@ public class HuffmanCode {
         // initially, we have a forest of leaves
         // one for each non-empty character
         for (int i = 0; i < charFreqs.length; i++)
-            if (charFreqs[i] > 0)
+            if (charFreqs[i] > 0) {
+		System.out.println("charFreqs[i] = " + charFreqs[i]);
                 trees.offer(new HuffmanLeaf(charFreqs[i], (char)i));
-        
+	    }
         assert trees.size() > 0;
         // loop until there is only one tree left
         while (trees.size() > 1) {
-        	System.out.println("trees.size() = " + trees.size());
+            System.out.println("trees.size() = " + trees.size());
             // two trees with least frequency
-        	System.out.println("***");
+            System.out.println("***");
             HuffmanTree a = trees.poll();
             HuffmanTree b = trees.poll();
-            
+            //HuffmanLeaf la = (HuffmanLeaf)a;
+            //HuffmanLeaf lb = (HuffmanLeaf)b;
+            //System.out.println("a.value = " + la.value);
+            //System.out.println("b.value = " + lb.value);
+            //System.out.println("a.frequency = " + a.frequency);
+            //System.out.println("b.frequency = " + b.frequency);
             // put into new node and re-insert into queue
             trees.offer(new HuffmanNode(a, b));
         }
@@ -79,16 +85,16 @@ public class HuffmanCode {
     
     public static void main(String[] args) {
         //String test = "this is an example for huffman encoding";
-        String test = "the";
+        String test = "ther";
         
         // we will assume that all our characters will have
         // code less than 256, for simplicity
         int[] charFreqs = new int[256];
         // read each character and record the frequencies
         for (char c : test.toCharArray()) {
-        	System.out.println("c = " + c );
+            //System.out.println("c = " + c );
             charFreqs[c]++;
-            System.out.println("carFreqs = " + Arrays.toString(charFreqs));
+            //System.out.println("carFreqs = " + Arrays.toString(charFreqs));
         }
         
         // build tree
