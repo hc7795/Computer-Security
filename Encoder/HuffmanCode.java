@@ -92,9 +92,9 @@ public class HuffmanCode {
         int[] charFreqs = new int[256];
         // read each character and record the frequencies
         for (char c : test.toCharArray()) {
-            //System.out.println("c = " + c );
+            System.out.println("c = " + c );
             charFreqs[c]++;
-            //System.out.println("carFreqs = " + Arrays.toString(charFreqs));
+            System.out.println("carFreqs = " + Arrays.toString(charFreqs));
         }
         
         // build tree

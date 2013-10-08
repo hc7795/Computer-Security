@@ -32,16 +32,22 @@ class HuffmanNode extends HuffmanTree {
 }
 
 public class Encoder{
-	
-	
+	public static HashMap<Character, String> freqnprefix = new HashMap<Character, String>();
+	public static char[] alph = {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+
 	public static void main(String args[]) throws IOException{
 		File input = new File(args[0]);
 		Scanner reader = new Scanner(input);
-		char[] alph = {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+		
 		int[] charFreqs = new int[256];
 		int index = 1;
+		int frequencySum = 0;
+		ArrayList<Integer> frequncyList = new ArrayList<Integer>();
+		
 		while(reader.hasNextLine()) {
 			String frequency = reader.nextLine();
+			frequncyList.add(Integer.parseInt(frequency));
+			frequencySum += Integer.parseInt(frequency);
 			for(int i = 0; i < Integer.parseInt(frequency); i++) {
 				++charFreqs[alph[index]];
 			}
@@ -52,7 +58,46 @@ public class Encoder{
 		
 		System.out.println("SYMBOL\tWEIGHT\tHUFFMAN CODE");
 		printCodes(tree, new StringBuffer());
+
 		
+		//generate a k-length text
+		File testText = new File("testText");
+		BufferedWriter bw = new BufferedWriter(new FileWriter(testText));
+
+		int textLen = Integer.parseInt(args[1]);
+		generateText(bw, textLen, frequencySum, frequncyList);
+		
+		//Encode the generated text
+		//File testText = new File("testText.enc1");
+		//BufferedWriter encodeBW = new BufferedWriter(new FileWriter(testText));
+		//encode(testText)
+	}
+	/*
+	public static void Encode(File text) {
+		Scanner sc = new Scanner(text); 
+		String line = sc.nextLine();
+		byte[] bytes = line.getBytes();
+		for(int i=0; i<bytes.length; i++) {
+			String bits = String.format("%8s", Integer.toBinaryString(bytes[i])).replace(' ', '0');
+			
+		}
+	}
+	*/
+	public static void generateText(BufferedWriter bw, int klen, int frequencySum, ArrayList frequencyList) throws IOException{
+		Random ran = new Random();
+		System.out.println("Entered a generateText method.");
+		for(int i = 0; i<klen; i++) {
+			int range = 0;
+			int n = ran.nextInt(frequencySum) + 1;
+			for(int j = 0; j<frequencyList.size(); j++) {
+				range += Integer.parseInt(frequencyList.get(j).toString());
+				if(n <= range) {
+					bw.write(alph[j+1]);
+					break;
+				}
+			}
+		}
+		bw.close();
 	}
 	
 	public static HuffmanTree buildTree(int[] charFreqs) {
@@ -61,25 +106,25 @@ public class Encoder{
 	    // one for each non-empty character
 	    for (int i = 0; i < charFreqs.length; i++)
 		if (charFreqs[i] > 0) {
-		    System.out.println("charFreqs[i] = " + charFreqs[i]);
+		    //System.out.println("charFreqs[i] = " + charFreqs[i]);
 		    trees.offer(new HuffmanLeaf(charFreqs[i], (char)i));
 		}
 	    assert trees.size() > 0;
 	    // loop until there is only one tree left
 	    while (trees.size() > 1) {
-		System.out.println("trees.size() = " + trees.size());
-		// two trees with least frequency
-		System.out.println("***");
-		HuffmanTree a = trees.poll();
-		HuffmanTree b = trees.poll();
-		//HuffmanLeaf la = (HuffmanLeaf)a;
-		//HuffmanLeaf lb = (HuffmanLeaf)b;
-		//System.out.println("a.value = " + la.value);
-		//System.out.println("b.value = " + lb.value);
-		//System.out.println("a.frequency = " + a.frequency);
-		//System.out.println("b.frequency = " + b.frequency);
-		// put into new node and re-insert into queue
-		trees.offer(new HuffmanNode(a, b));
+			//System.out.println("trees.size() = " + trees.size());
+			// two trees with least frequency
+			//System.out.println("***");
+			HuffmanTree a = trees.poll();
+			HuffmanTree b = trees.poll();
+			//HuffmanLeaf la = (HuffmanLeaf)a;
+			//HuffmanLeaf lb = (HuffmanLeaf)b;
+			//System.out.println("a.value = " + la.value);
+			//System.out.println("b.value = " + lb.value);
+			//System.out.println("a.frequency = " + a.frequency);
+			//System.out.println("b.frequency = " + b.frequency);
+			// put into new node and re-insert into queue
+			trees.offer(new HuffmanNode(a, b));
 	    }
 	    return trees.poll();
 	}
@@ -87,23 +132,25 @@ public class Encoder{
 	public static void printCodes(HuffmanTree tree, StringBuffer prefix) {
 	    assert tree != null;
 	    if (tree instanceof HuffmanLeaf) {
-		HuffmanLeaf leaf = (HuffmanLeaf)tree;
-		
-		// print out character, frequency, and code for this leaf (which is just the prefix)
-		System.out.println(leaf.value + "\t" + leaf.frequency + "\t" + prefix);
+			HuffmanLeaf leaf = (HuffmanLeaf)tree;
+
+			freqnprefix.put(new Character(leaf.value), prefix.toString());
+			
+			// print out character, frequency, and code for this leaf (which is just the prefix)
+			System.out.println(leaf.value + "\t" + leaf.frequency + "\t" + prefix);
 
 	    } else if (tree instanceof HuffmanNode) {
-		HuffmanNode node = (HuffmanNode)tree;
-		
-		// traverse left
-		prefix.append('0');
-		printCodes(node.left, prefix);
-		prefix.deleteCharAt(prefix.length()-1);
-		
-		// traverse right
-		prefix.append('1');
-		printCodes(node.right, prefix);
-		prefix.deleteCharAt(prefix.length()-1);
+			HuffmanNode node = (HuffmanNode)tree;
+			
+			// traverse left
+			prefix.append('0');
+			printCodes(node.left, prefix);
+			prefix.deleteCharAt(prefix.length()-1);
+			
+			// traverse right
+			prefix.append('1');
+			printCodes(node.right, prefix);
+			prefix.deleteCharAt(prefix.length()-1);
 	    }
 	}
 }
