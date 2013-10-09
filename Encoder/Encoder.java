@@ -34,6 +34,7 @@ class HuffmanNode extends HuffmanTree {
 public class Encoder{
 	public static HashMap<Character, String> symbolnprefix = new HashMap<Character, String>();
 	public static HashMap<String, Character> prefixnsymbol = new HashMap<String, Character>();
+	public static HashMap<Integer, String> twoSymbol = new HashMap<Integer, String>();
 	public static char[] alph = {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	public static int totalBits = 0;
 	
@@ -45,6 +46,7 @@ public class Encoder{
 		int index = 1;
 		int frequencySum = 0;
 		ArrayList<Integer> frequencyList = new ArrayList<Integer>();
+		//ArrayList<Character> symbolList = new ArrayList<Character>();
 		
 		int symbolNum = 0;
 		while(reader.hasNextLine()) {
@@ -80,8 +82,6 @@ public class Encoder{
 		BufferedWriter decodebw = new BufferedWriter(new FileWriter(originalText));
 		decode(encodedtestText, decodebw);
 		
-		
-		
 		//Compute the average bits per symbol
 		double avgBits = (double)totalBits/symbolNum;
 		System.out.println("The average bits per symbol (single symbol) = " + avgBits);
@@ -89,11 +89,26 @@ public class Encoder{
 		double entropy = getEntropy(frequencyList, frequencySum);
 		System.out.println("Computed entropy (single symbol) = " + entropy);
 		
+		
 		//the 2-symbol derived alphabet
+		getSymbolPair(frequencyList);
+	}
+	
+	public static void getSymbolPair(ArrayList<Integer> frequencyList) {
+		//a bunch of variables
+		char symbol1 = '';
+		char symbol2 = '';
+		int frequency = 0;
+		String pair = "";
+	
 		ArrayList<Integer> frequencyList2 = frequencyList;
-		for() {//frequencyList
-			for() {//frequencyList2
-				
+		for(int i=0; i<frequencyList; i++) {//frequencyList
+			symbol1 = alph[i];
+			for(int j = 0; j<frequencyList2, j++) {//frequencyList2
+				symbol2 = alph[j];
+				frequency = frequencyList.get(i) * frequencyList2.get(j);
+				pair = new StringBuilder().append(symbol1).append(symbol2).toString();
+				twoSymbol.put(frequency, pair);
 			}
 		}
 	}
@@ -186,6 +201,13 @@ public class Encoder{
 			trees.offer(new HuffmanNode(a, b));
 	    }
 	    return trees.poll();
+	}
+	
+	public static HuffmanTree buildTreeForPair() {
+		PriorityQueue<HuffmanTree> trees = new PriorityQueue<HuffmanTree>();
+		for(int i=0; i<trees.size(); i++) { //twoSymbol
+			
+		}
 	}
 
 	public static void printCodes(HuffmanTree tree, StringBuffer prefix) {
