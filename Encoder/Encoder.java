@@ -32,7 +32,8 @@ class HuffmanNode extends HuffmanTree {
 }
 
 public class Encoder{
-	public static HashMap<Character, String> freqnprefix = new HashMap<Character, String>();
+	public static HashMap<Character, String> symbolnprefix = new HashMap<Character, String>();
+	public static HashMap<String, Character> prefixnsymbol = new HashMap<String, Character>();
 	public static char[] alph = {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
 	public static void main(String args[]) throws IOException{
@@ -68,24 +69,39 @@ public class Encoder{
 		generateText(bw, textLen, frequencySum, frequncyList);
 		
 		//Encode the generated text
-		//File testText = new File("testText.enc1");
-		//BufferedWriter encodeBW = new BufferedWriter(new FileWriter(testText));
-		//encode(testText)
+		File encodedtestText = new File("testText.enc1");
+		BufferedWriter encodebw = new BufferedWriter(new FileWriter(encodedtestText));
+		encode(testText, encodebw);
+		
+		//Decode the encoded text
+		File originalText = new File("testText.dec1");
+		BufferedWriter decodebw = new BufferedWriter(new FileWriter(originalText));
+		decode(encodedtestText, decodebw);
 	}
-	/*
-	public static void Encode(File text) {
-		Scanner sc = new Scanner(text); 
-		String line = sc.nextLine();
-		byte[] bytes = line.getBytes();
-		for(int i=0; i<bytes.length; i++) {
-			String bits = String.format("%8s", Integer.toBinaryString(bytes[i])).replace(' ', '0');
-			
+	
+	public static void decode(File encodedtestText, BufferedWriter decodebw) throws IOException{
+		Scanner sc = new Scanner(encodedtestText);
+		while(sc.hasNext()) {
+			String code = sc.nextLine();
+			decodebw.write(prefixnsymbol.get(code));
 		}
+		decodebw.close();
 	}
-	*/
+	
+	public static void encode(File testText, BufferedWriter encodebw) throws IOException{
+		Scanner sc = new Scanner(testText); 
+		String line = sc.nextLine();
+		for(int i = 0; i<line.length(); i++) {
+			//System.out.println("char returned = " + freqnprefix.get(line.charAt(i)));
+			encodebw.write(symbolnprefix.get(line.charAt(i)));
+			encodebw.newLine();
+		}
+		encodebw.close();
+	}
+	
 	public static void generateText(BufferedWriter bw, int klen, int frequencySum, ArrayList frequencyList) throws IOException{
 		Random ran = new Random();
-		System.out.println("Entered a generateText method.");
+		//System.out.println("Entered a generateText method.");
 		for(int i = 0; i<klen; i++) {
 			int range = 0;
 			int n = ran.nextInt(frequencySum) + 1;
@@ -133,8 +149,10 @@ public class Encoder{
 	    assert tree != null;
 	    if (tree instanceof HuffmanLeaf) {
 			HuffmanLeaf leaf = (HuffmanLeaf)tree;
-
-			freqnprefix.put(new Character(leaf.value), prefix.toString());
+			
+			//setting the global variables for encoding and decoding 
+			symbolnprefix.put(new Character(leaf.value), prefix.toString());
+			prefixnsymbol.put(prefix.toString(), new Character(leaf.value));
 			
 			// print out character, frequency, and code for this leaf (which is just the prefix)
 			System.out.println(leaf.value + "\t" + leaf.frequency + "\t" + prefix);
