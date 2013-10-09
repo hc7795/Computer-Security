@@ -35,11 +35,14 @@ public class HuffmanCode {
         PriorityQueue<HuffmanTree> trees = new PriorityQueue<HuffmanTree>();
         // initially, we have a forest of leaves
         // one for each non-empty character
-        for (int i = 0; i < charFreqs.length; i++)
+        for (int i = 0; i < charFreqs.length; i++) {
             if (charFreqs[i] > 0) {
-		System.out.println("charFreqs[i] = " + charFreqs[i]);
+            	System.out.println("charFreqs[i] = " + charFreqs[i]);
+            	System.out.println("i = " + i);
+            	System.out.println("(char) i = " + (char)i);
                 trees.offer(new HuffmanLeaf(charFreqs[i], (char)i));
-	    }
+            }
+        }
         assert trees.size() > 0;
         // loop until there is only one tree left
         while (trees.size() > 1) {
@@ -85,7 +88,7 @@ public class HuffmanCode {
     
     public static void main(String[] args) {
         //String test = "this is an example for huffman encoding";
-        String test = "aabcd"; // ehrt
+        String test = "aabbcd"; // ehrt
         
         // we will assume that all our characters will have
         // code less than 256, for simplicity
