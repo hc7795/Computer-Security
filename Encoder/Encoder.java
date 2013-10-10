@@ -35,15 +35,18 @@ public class Encoder{
 	//one symbol
 	public static HashMap<String, String> symbolnprefix = new HashMap<String, String>();
 	public static HashMap<String, String> prefixnsymbol = new HashMap<String, String>();
+	public static HashMap<String, int[]> encodings = new HashMap<String, int[]>();
+	
 	//two symbol
 	public static Map<String, Integer> twoSymbol = new HashMap<String, Integer>();
 	public static HashMap<String, String> symbolnprefix2 = new HashMap<String, String>();
 	public static HashMap<String, String> prefixnsymbol2 = new HashMap<String, String>();
+	public static HashMap<String, int[]> encodings2 = new HashMap<String, int[]>();
 	
 	public static char[] alph = {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-	public static int totalBits = 0;
 	
 	public static void main(String args[]) throws IOException{
+		
 		File input = new File(args[0]);
 		Scanner reader = new Scanner(input);
 		
@@ -88,7 +91,7 @@ public class Encoder{
 		decode(encodedtestText, decodebw, true);
 		
 		//Compute the average bits per symbol
-		double avgBits = (double)totalBits/symbolNum;
+		double avgBits = computeAvgBits(true, frequencySum, Integer.parseInt(args[1]));
 		System.out.println("The average bits per symbol (single symbol) = " + avgBits);
 		//Compute the entropy
 		double entropy = getEntropy(frequencyList, frequencySum);
@@ -99,7 +102,6 @@ public class Encoder{
 		setSymbolPair(frequencyList);
 		HuffmanTree twoSymbolTree = buildTreeForPair();
 		System.out.println("SYMBOL\tWEIGHT\tHUFFMAN CODE");
-		totalBits = 0;
 		printCodes(twoSymbolTree, new StringBuffer(), false);
 		
 		//Encode the generated text
@@ -113,14 +115,38 @@ public class Encoder{
 		decode(encodedtestText2, decodebw2, false);
 		
 		//Compute the average bits per symbol
-		avgBits = (double)totalBits/symbolNum;
+		//avgBits = (double)totalBits/symbolNum;
+		avgBits = computeAvgBits(false, frequencySum, Integer.parseInt(args[1]));
 		System.out.println("The average bits per symbol (2-symbol) = " + avgBits);
 		
+	}
+	/*
+	 * for (Map.Entry<String, Integer> entry : twoSymbol.entrySet()) {  //twoSymbol
+			//System.out.println("entry.getValue() = " + entry.getValue());
+			trees.offer(new HuffmanLeaf(entry.getValue(), entry.getKey()));
+		}
+	 */
+	public static double computeAvgBits(boolean oneSymbol, int frequencySum, int n){
+		double totalBits = 0;
+		if(oneSymbol) {
+			for(Map.Entry<String, int[]> entry : encodings.entrySet()) {
+				totalBits += (double)n*((double)entry.getValue()[0]/frequencySum) * entry.getValue()[1];
+			}
+			System.out.println("total bits = " + totalBits);
+			return (double) totalBits/encodings.size();
+		}
+		else {
+			for(Map.Entry<String, int[]> entry : encodings2.entrySet()) {
+				totalBits += (double)(n/2)*((double)entry.getValue()[0]/(frequencySum*frequencySum)) * entry.getValue()[1];
+			}
+			System.out.println("total bits = " + totalBits);
+			return (double) totalBits/encodings2.size();
+		}
 	}
 	
 	// makes all possible pairs and map them to the product of their frequencies
 	public static void setSymbolPair(ArrayList<Integer> frequencyList) {
-		//a bunch of variables
+		//a bunch of variables used in this method
 		char symbol1 = '\0';
 		char symbol2 = '\0';
 		int frequency = 0;
@@ -266,13 +292,13 @@ public class Encoder{
 			HuffmanLeaf leaf = (HuffmanLeaf)tree;
 			
 			if(oneSymbol) {
-				totalBits += prefix.toString().length();
+				encodings.put(leaf.value, new int[]{leaf.frequency, prefix.toString().length()});
 				//setting the global variables for encoding and decoding 
 				symbolnprefix.put(leaf.value, prefix.toString());
 				prefixnsymbol.put(prefix.toString(), leaf.value);
 			}
 			else {
-				totalBits += prefix.toString().length();
+				encodings2.put(leaf.value, new int[]{leaf.frequency, prefix.toString().length()});
 				symbolnprefix2.put(leaf.value, prefix.toString());
 				prefixnsymbol2.put(prefix.toString(), leaf.value);
 			}
