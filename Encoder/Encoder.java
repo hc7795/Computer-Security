@@ -13,9 +13,9 @@ abstract class HuffmanTree implements Comparable<HuffmanTree> {
 }
 
 class HuffmanLeaf extends HuffmanTree {
-    public final char value; // the character this leaf represents
+    public final String value; // the character this leaf represents
     
-    public HuffmanLeaf(int freq, char val) {
+    public HuffmanLeaf(int freq, String val) {
         super(freq); //super calls a constructor of the superclass, which is HuffmanTree.
         value = val;
     }
@@ -32,9 +32,14 @@ class HuffmanNode extends HuffmanTree {
 }
 
 public class Encoder{
-	public static HashMap<Character, String> symbolnprefix = new HashMap<Character, String>();
-	public static HashMap<String, Character> prefixnsymbol = new HashMap<String, Character>();
-	public static HashMap<Integer, String> twoSymbol = new HashMap<Integer, String>();
+	//one symbol
+	public static HashMap<String, String> symbolnprefix = new HashMap<String, String>();
+	public static HashMap<String, String> prefixnsymbol = new HashMap<String, String>();
+	//two symbol
+	public static Map<String, Integer> twoSymbol = new HashMap<String, Integer>();
+	public static HashMap<String, String> symbolnprefix2 = new HashMap<String, String>();
+	public static HashMap<String, String> prefixnsymbol2 = new HashMap<String, String>();
+	
 	public static char[] alph = {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 	public static int totalBits = 0;
 	
@@ -63,7 +68,7 @@ public class Encoder{
 		HuffmanTree tree = buildTree(charFreqs);
 		
 		System.out.println("SYMBOL\tWEIGHT\tHUFFMAN CODE");
-		printCodes(tree, new StringBuffer());
+		printCodes(tree, new StringBuffer(), true);
 		
 		//generate a k-length text
 		File testText = new File("testText");
@@ -75,12 +80,12 @@ public class Encoder{
 		//Encode the generated text
 		File encodedtestText = new File("testText.enc1");
 		BufferedWriter encodebw = new BufferedWriter(new FileWriter(encodedtestText));
-		encode(testText, encodebw);
+		encode(testText, encodebw, true);
 		
 		//Decode the encoded text
 		File originalText = new File("testText.dec1");
 		BufferedWriter decodebw = new BufferedWriter(new FileWriter(originalText));
-		decode(encodedtestText, decodebw);
+		decode(encodedtestText, decodebw, true);
 		
 		//Compute the average bits per symbol
 		double avgBits = (double)totalBits/symbolNum;
@@ -91,26 +96,48 @@ public class Encoder{
 		
 		
 		//the 2-symbol derived alphabet
-		getSymbolPair(frequencyList);
+		setSymbolPair(frequencyList);
+		HuffmanTree twoSymbolTree = buildTreeForPair();
+		System.out.println("SYMBOL\tWEIGHT\tHUFFMAN CODE");
+		totalBits = 0;
+		printCodes(twoSymbolTree, new StringBuffer(), false);
+		
+		//Encode the generated text
+		File encodedtestText2 = new File("testText.enc2");
+		BufferedWriter encodebw2 = new BufferedWriter(new FileWriter(encodedtestText2));
+		encode(testText, encodebw2, false);
+		
+		//Decode the encoded text
+		File originalText2 = new File("testText.dec2");
+		BufferedWriter decodebw2 = new BufferedWriter(new FileWriter(originalText2));
+		decode(encodedtestText2, decodebw2, false);
+		
+		//Compute the average bits per symbol
+		avgBits = (double)totalBits/symbolNum;
+		System.out.println("The average bits per symbol (2-symbol) = " + avgBits);
+		
 	}
 	
-	public static void getSymbolPair(ArrayList<Integer> frequencyList) {
+	// makes all possible pairs and map them to the product of their frequencies
+	public static void setSymbolPair(ArrayList<Integer> frequencyList) {
 		//a bunch of variables
-		char symbol1 = '';
-		char symbol2 = '';
+		char symbol1 = '\0';
+		char symbol2 = '\0';
 		int frequency = 0;
 		String pair = "";
 	
 		ArrayList<Integer> frequencyList2 = frequencyList;
-		for(int i=0; i<frequencyList; i++) {//frequencyList
-			symbol1 = alph[i];
-			for(int j = 0; j<frequencyList2, j++) {//frequencyList2
-				symbol2 = alph[j];
+		for(int i=0; i<frequencyList.size(); i++) {//frequencyList
+			symbol1 = alph[i+1];
+			for(int j = 0; j<frequencyList2.size(); j++) {//frequencyList2
+				symbol2 = alph[j+1];
 				frequency = frequencyList.get(i) * frequencyList2.get(j);
 				pair = new StringBuilder().append(symbol1).append(symbol2).toString();
-				twoSymbol.put(frequency, pair);
+				//System.out.println("pair = " + pair + "frequency = " + frequency);
+				twoSymbol.put(pair, frequency);
 			}
 		}
+		//System.out.println("In setSymbolPair method, twoSymbol.size() = " + twoSymbol.size());
 	}
 	
 	public static double getEntropy(ArrayList<Integer> frequencyList, int frequencySum) {
@@ -121,6 +148,7 @@ public class Encoder{
 		
 		//check if n symbols are all equally probable
 		if(frequencyList.get(0) == frequencySum/frequencyList.size()) {
+			System.out.println("**Entered a equal probability condition");
 			boolean sameFrequency = true;
 			for(int k =0; k<frequencyList.size(); k++) {
 				if(frequencyList.get(k) != frequencySum/frequencyList.size())
@@ -134,25 +162,38 @@ public class Encoder{
 	}
 	
 	public static double log (double x, double base) {
-	    return (double) (Math.log(x) / Math.log(base));
+	    return (Math.log(x) / Math.log(base));
 	}
 	
-	public static void decode(File encodedtestText, BufferedWriter decodebw) throws IOException{
+	public static void decode(File encodedtestText, BufferedWriter decodebw, boolean oneSymbol) throws IOException{
 		Scanner sc = new Scanner(encodedtestText);
 		while(sc.hasNext()) {
 			String code = sc.nextLine();
-			decodebw.write(prefixnsymbol.get(code));
+			if(oneSymbol)
+				decodebw.write(prefixnsymbol.get(code));
+			else
+				decodebw.write(prefixnsymbol2.get(code));
 		}
 		decodebw.close();
 	}
 	
-	public static void encode(File testText, BufferedWriter encodebw) throws IOException{
+	public static void encode(File testText, BufferedWriter encodebw, boolean oneSymbol) throws IOException{
 		Scanner sc = new Scanner(testText); 
 		String line = sc.nextLine();
+		//System.out.println("line  = " + line);
 		for(int i = 0; i<line.length(); i++) {
-			//System.out.println("char returned = " + freqnprefix.get(line.charAt(i)));
-			encodebw.write(symbolnprefix.get(line.charAt(i)));
-			encodebw.newLine();
+			if(oneSymbol) {
+				encodebw.write(symbolnprefix.get(Character.toString(line.charAt(i))));
+				encodebw.newLine();
+			}
+			else {
+				if(2*i <= line.length()-2) {
+					//System.out.println("line.substring(2i, i+2) = " + line.substring(2*i, 2*i+2));
+					encodebw.write(symbolnprefix2.get(line.substring(2*i, 2*i+2)));
+					//System.out.println("wrote successfully");
+					encodebw.newLine();
+				}
+			}
 		}
 		encodebw.close();
 	}
@@ -181,7 +222,7 @@ public class Encoder{
 	    for (int i = 0; i < charFreqs.length; i++)
 		if (charFreqs[i] > 0) {
 		    //System.out.println("charFreqs[i] = " + charFreqs[i]);
-		    trees.offer(new HuffmanLeaf(charFreqs[i], (char)i));
+		    trees.offer(new HuffmanLeaf(charFreqs[i], Character.toString((char)i)));
 		}
 	    assert trees.size() > 0;
 	    // loop until there is only one tree left
@@ -205,21 +246,36 @@ public class Encoder{
 	
 	public static HuffmanTree buildTreeForPair() {
 		PriorityQueue<HuffmanTree> trees = new PriorityQueue<HuffmanTree>();
-		for(int i=0; i<trees.size(); i++) { //twoSymbol
-			
+		//System.out.println("twoSymbol.size() = " + twoSymbol.size());
+		for (Map.Entry<String, Integer> entry : twoSymbol.entrySet()) {  //twoSymbol
+			//System.out.println("entry.getValue() = " + entry.getValue());
+			trees.offer(new HuffmanLeaf(entry.getValue(), entry.getKey()));
 		}
+		assert trees.size() > 0;
+		while (trees.size() > 1) {
+			HuffmanTree a = trees.poll();
+			HuffmanTree b = trees.poll();
+			trees.offer(new HuffmanNode(a, b));
+		}
+		return trees.poll();
 	}
 
-	public static void printCodes(HuffmanTree tree, StringBuffer prefix) {
+	public static void printCodes(HuffmanTree tree, StringBuffer prefix, boolean oneSymbol) {
 	    assert tree != null;
 	    if (tree instanceof HuffmanLeaf) {
 			HuffmanLeaf leaf = (HuffmanLeaf)tree;
 			
-			totalBits += prefix.toString().length();
-			//setting the global variables for encoding and decoding 
-			symbolnprefix.put(new Character(leaf.value), prefix.toString());
-			prefixnsymbol.put(prefix.toString(), new Character(leaf.value));
-			
+			if(oneSymbol) {
+				totalBits += prefix.toString().length();
+				//setting the global variables for encoding and decoding 
+				symbolnprefix.put(leaf.value, prefix.toString());
+				prefixnsymbol.put(prefix.toString(), leaf.value);
+			}
+			else {
+				totalBits += prefix.toString().length();
+				symbolnprefix2.put(leaf.value, prefix.toString());
+				prefixnsymbol2.put(prefix.toString(), leaf.value);
+			}
 			// print out character, frequency, and code for this leaf (which is just the prefix)
 			System.out.println(leaf.value + "\t" + leaf.frequency + "\t" + prefix);
 
@@ -228,12 +284,12 @@ public class Encoder{
 			
 			// traverse left
 			prefix.append('0');
-			printCodes(node.left, prefix);
+			printCodes(node.left, prefix, oneSymbol);
 			prefix.deleteCharAt(prefix.length()-1);
 			
 			// traverse right
 			prefix.append('1');
-			printCodes(node.right, prefix);
+			printCodes(node.right, prefix, oneSymbol);
 			prefix.deleteCharAt(prefix.length()-1);
 	    }
 	}
