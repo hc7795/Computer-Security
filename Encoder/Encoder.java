@@ -91,16 +91,19 @@ public class Encoder{
 		decode(encodedtestText, decodebw, true);
 		
 		//Compute the average bits per symbol
-		double avgBits = computeAvgBits(true, frequencySum, Integer.parseInt(args[1]));
-		System.out.println("The average bits per symbol (single symbol) = " + avgBits);
+		double avgBits = computeAvgBits(true, frequencySum, Integer.parseInt(args[1]), symbolNum);
+		System.out.println("Efficiency, the average bits per symbol (single symbol) = " + avgBits);
 		//Compute the entropy
 		double entropy = getEntropy(frequencyList, frequencySum);
 		System.out.println("Computed entropy (single symbol) = " + entropy);
-		
+		//percentage difference
+		System.out.println("Percentage difference = " + (100 - ((double)entropy/avgBits * 100)) + "%");
 		
 		//the 2-symbol derived alphabet
 		setSymbolPair(frequencyList);
 		HuffmanTree twoSymbolTree = buildTreeForPair();
+		System.out.println();
+		System.out.println();
 		System.out.println("SYMBOL\tWEIGHT\tHUFFMAN CODE");
 		printCodes(twoSymbolTree, new StringBuffer(), false);
 		
@@ -115,32 +118,27 @@ public class Encoder{
 		decode(encodedtestText2, decodebw2, false);
 		
 		//Compute the average bits per symbol
-		//avgBits = (double)totalBits/symbolNum;
-		avgBits = computeAvgBits(false, frequencySum, Integer.parseInt(args[1]));
-		System.out.println("The average bits per symbol (2-symbol) = " + avgBits);
-		
+		avgBits = computeAvgBits(false, frequencySum, Integer.parseInt(args[1]), symbolNum);
+		System.out.println("Efficiency, the average bits per symbol (2-symbol) = " + avgBits);
+		//percentage difference
+		System.out.println("Percentage difference = " + (100 - ((double)entropy/avgBits * 100)) + "%");
 	}
-	/*
-	 * for (Map.Entry<String, Integer> entry : twoSymbol.entrySet()) {  //twoSymbol
-			//System.out.println("entry.getValue() = " + entry.getValue());
-			trees.offer(new HuffmanLeaf(entry.getValue(), entry.getKey()));
-		}
-	 */
-	public static double computeAvgBits(boolean oneSymbol, int frequencySum, int n){
+
+	public static double computeAvgBits(boolean oneSymbol, int frequencySum, int n, int frequencyNum){
 		double totalBits = 0;
 		if(oneSymbol) {
 			for(Map.Entry<String, int[]> entry : encodings.entrySet()) {
 				totalBits += (double)n*((double)entry.getValue()[0]/frequencySum) * entry.getValue()[1];
 			}
 			System.out.println("total bits = " + totalBits);
-			return (double) totalBits/encodings.size();
+			return (double) totalBits/n;//(Math.ceil(log(frequencyNum,2)) *n);
 		}
 		else {
 			for(Map.Entry<String, int[]> entry : encodings2.entrySet()) {
 				totalBits += (double)(n/2)*((double)entry.getValue()[0]/(frequencySum*frequencySum)) * entry.getValue()[1];
 			}
 			System.out.println("total bits = " + totalBits);
-			return (double) totalBits/encodings2.size();
+			return (double) totalBits/n;//(Math.ceil(log(frequencyNum,2)) *n);
 		}
 	}
 	
@@ -180,8 +178,10 @@ public class Encoder{
 				if(frequencyList.get(k) != frequencySum/frequencyList.size())
 					sameFrequency = false;
 			}
-			if(sameFrequency)
+			if(sameFrequency) {
 				entropy = log((double)1/frequencySum, 2);
+				System.out.println("sameFrequency");
+			}
 		}
 		entropy *= -1;
 		return entropy;
