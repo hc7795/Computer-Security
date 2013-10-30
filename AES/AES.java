@@ -1,11 +1,14 @@
 import java.io.*;
 import java.util.*;
 import java.lang.Integer;
+import java.math.BigInteger;
+
 public class AES {
 	
-	public static String[][] keyArray = new String[4][4];
+	public static byte[][] keyArray = new byte[4][4];
 	
-	public static String[][] sbox ={{"63", "7C", "77", "7B", "F2", "6B", "6F", "C5", "30", "01", "67", "2B", "FE", "D7", "AB", "76"},
+	public static String[][] sbox =
+		 {{"63", "7C", "77", "7B", "F2", "6B", "6F", "C5", "30", "01", "67", "2B", "FE", "D7", "AB", "76"},
 		  {"CA", "82", "C9", "7D", "FA", "59", "47", "F0", "AD", "D4", "A2", "AF", "9C", "A4", "72", "C0"},
 		  {"B7", "FD", "93", "26", "36", "3F", "F7", "CC", "34", "A5", "E5", "F1", "71", "D8", "31", "15"},
 		  {"04", "C7", "23", "C3", "18", "96", "05", "9A", "07", "12", "80", "E2", "EB", "27", "B2", "75"},
@@ -43,33 +46,73 @@ public class AES {
 					col = 0;
 					count = 0;
 				}
-				keyArray[row][col] = hex;
+				//keyArray[row][col] = hex;
+				String hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(hex, 16))).replace(' ', '0');
+				System.out.println("hexInBinary = " + hexInBinary);
+				byte binaryInByte = (byte)Integer.parseInt(hexInBinary, 2);
+				keyArray[row][col] = binaryInByte;
+				//keyArray[row][col] = Byte.valueOf(new BigInteger(hex,16).toString(2));
 				++count;
 				++col;
 			}
-			for (String[] arr : keyArray) {
-	            System.out.println(Arrays.toString(arr));
-	        }
+			for (byte[] arr : keyArray) {
+				System.out.println(Arrays.toString(arr));
+			}
 			
 			System.out.println();
 			subBytes();
+			for (byte[] arr : keyArray) {
+				System.out.println(Arrays.toString(arr));
+			}
 			
-			for (String[] arr : keyArray) {
-	            System.out.println(Arrays.toString(arr));
-	        }
+			shiftRows();
+			System.out.println();
+			for (byte[] arr : keyArray) {
+				System.out.println(Arrays.toString(arr));
+			}
+			//System.out.println("sdghikfdhgkjfg = " + Integer.toHexString(keyArray[0][0]));
+		}
+	}
+	public static void shiftRows() {
+		byte temp = 0;
+		int k = 0;
+		for(int i=1; i<keyArray.length; i++) {
+			k = i;
+			while(k > 0) {
+				temp = keyArray[i][0];
+				for(int j = 1; j<keyArray[i].length; j++) {
+					keyArray[i][j-1] = keyArray[i][j];
+				}
+				keyArray[i][keyArray[i].length-1] = temp;
+				--k;
+			}
 		}
 	}
 	
 	public static void subBytes() {
-		String hex = "";
+		byte hexByte = 0;
+		int unsignedByte = 0;
+		String hexString = "";
+		byte sboxValue = 0;
 		int row = 0;
 		int col = 0;
 		for(int i = 0; i<keyArray.length; i++) {
 			for(int j = 0; j<keyArray[i].length; j++) {
-				hex = keyArray[i][j];
-				row = Integer.parseInt(Character.toString(hex.charAt(0)), 16);
-				col = Integer.parseInt(Character.toString(hex.charAt(1)), 16);
-				keyArray[i][j] = sbox[row][col];
+				hexByte = keyArray[i][j];
+				if(hexByte < 0) {
+					unsignedByte = hexByte + 256;
+					hexString = Integer.toHexString(unsignedByte);
+				}
+				else
+					hexString = Integer.toHexString(hexByte);
+				if(hexString.length() == 1)
+					hexString = "0" + hexString;
+				//System.out.println("unsignedByte = " +  unsignedByte);
+				//System.out.println("hexString = " + hexString);
+				row = Integer.parseInt(Character.toString(hexString.charAt(0)), 16);
+				col = Integer.parseInt(Character.toString(hexString.charAt(1)), 16);
+				sboxValue = (byte) Integer.parseInt(sbox[row][col], 16);
+				keyArray[i][j] = sboxValue;
 			}
 		} 
 	}
