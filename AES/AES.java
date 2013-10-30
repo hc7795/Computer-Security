@@ -73,6 +73,11 @@ public class AES {
 			//System.out.println("sdghikfdhgkjfg = " + Integer.toHexString(keyArray[0][0]));
 		}
 	}
+	//taken from http://www.samiam.org/mix-column.html
+	public static void mixColumns() {
+		
+	}
+	
 	public static void shiftRows() {
 		byte temp = 0;
 		int k = 0;
