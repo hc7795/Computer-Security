@@ -65,16 +65,43 @@ public class AES {
 		File keyFile = new File(args[1]);
 		File inputFile = new File(args[2]);
 		
-		Scanner reader = new Scanner(keyFile);
+		Scanner keyReader = new Scanner(keyFile);
 		Scanner inputReader = new Scanner(inputFile);
+		
+		byte[][] keyArray = new byte[4][4];
+		
+		String cipherKey = keyReader.nextLine();
+		int keyIndex = 0;
+		int row = 0;
+		int col = 0;
+		byte binaryInByte = 0;
+		String hexInBinary = "";
+		String key = "";
+		int count = 0;
+		for(int i = 0; i<cipherKey.length()-1; i+=2) {
+			if(count ==4) {
+				++row;
+				col = 0;
+				count = 0;
+			}
+			key = cipherKey.substring(i, i+2);
+			//System.out.println("key = " + key);
+			hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(key, 16))).replace(' ', '0');
+			binaryInByte = (byte)Integer.parseInt(key, 2);
+			keyArray[row][col] = binaryInByte;
+			++col;
+			++count;
+		}
         
 		while(inputReader.hasNext()) {
 			String inputLine = inputReader.nextLine();
 			
 			String hex = "";
-			int row = 0;
-			int col = 0;
-			int count = 0;//increments a row at every 4 runs
+			row = 0;
+			col = 0;
+			count = 0;//increments a row at every 4 runs
+			binaryInByte = 0;
+			hexInBinary = "";
 			for(int i=0; i<inputLine.length()-1; i+=2) {
 				hex = inputLine.substring(i, i+2);
 				if(count == 4) {
@@ -83,9 +110,9 @@ public class AES {
 					count = 0;
 				}
 				//inputArray[row][col] = hex;
-				String hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(hex, 16))).replace(' ', '0');
-				System.out.println("hexInBinary = " + hexInBinary);
-				byte binaryInByte = (byte)Integer.parseInt(hexInBinary, 2);
+				hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(hex, 16))).replace(' ', '0');
+				//System.out.println("hexInBinary = " + hexInBinary);
+				binaryInByte = (byte)Integer.parseInt(hexInBinary, 2);
 				inputArray[row][col] = binaryInByte;
 				//inputArray[row][col] = Byte.valueOf(new BigInteger(hex,16).toString(2));
 				++count;
@@ -99,6 +126,7 @@ public class AES {
 			subBytes();
 			System.out.println("after subBytes");
 			for (byte[] arr : inputArray) {
+				System.out.println("arr[0] = " + Integer.toHexString(arr[0]));
 				System.out.println(Arrays.toString(arr));
 			}
 			
@@ -117,9 +145,17 @@ public class AES {
 			for (byte[] arr : inputArray) {
 				System.out.println(Arrays.toString(arr));
 			}
+			
+			System.out.println();
+			
 			//System.out.println("sdghikfdhgkjfg = " + Integer.toHexString(inputArray[0][0]));
 		}
 	}
+	
+	public static void addRoundKey() {
+		
+	}
+	
 	//Given by Prof.Young
 	public static void mixColumn2 (int c) {
 	    // This is another alternate version of mixColumn, using the 
@@ -205,12 +241,13 @@ public class AES {
 				//System.out.println("hexString = " + hexString);
 				row = Integer.parseInt(Character.toString(hexString.charAt(0)), 16);
 				col = Integer.parseInt(Character.toString(hexString.charAt(1)), 16);
+				//System.out.println("row = " + row + ", col = " + col);
 				sboxValue = (byte) Integer.parseInt(sbox[row][col], 16);
+				System.out.println("sboxValue = " + sboxValue);
 				inputArray[i][j] = sboxValue;
 			}
 		} 
 	}
-	
 }
 
 
