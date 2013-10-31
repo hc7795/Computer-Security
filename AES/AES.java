@@ -5,11 +5,8 @@ import java.math.BigInteger;
 
 public class AES {
 	
-<<<<<<< HEAD
 	public static byte[][] inputArray = new byte[4][4];
-=======
 	public static byte[][] keyArray = new byte[4][4];
->>>>>>> 948388a34141d544292bae8e186174c3c03af35a
 	
 	public static String[][] sbox =
 		 {{"63", "7C", "77", "7B", "F2", "6B", "6F", "C5", "30", "01", "67", "2B", "FE", "D7", "AB", "76"},
@@ -86,7 +83,6 @@ public class AES {
 					col = 0;
 					count = 0;
 				}
-<<<<<<< HEAD
 				//inputArray[row][col] = hex;
 				String hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(hex, 16))).replace(' ', '0');
 				System.out.println("hexInBinary = " + hexInBinary);
@@ -97,7 +93,6 @@ public class AES {
 				++col;
 			}
 			for (byte[] arr : inputArray) {
-=======
 				//keyArray[row][col] = hex;
 				String hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(hex, 16))).replace(' ', '0');
 				System.out.println("hexInBinary = " + hexInBinary);
@@ -108,24 +103,19 @@ public class AES {
 				++col;
 			}
 			for (byte[] arr : keyArray) {
->>>>>>> 948388a34141d544292bae8e186174c3c03af35a
 				System.out.println(Arrays.toString(arr));
 			}
 			
 			System.out.println();
 			subBytes();
-<<<<<<< HEAD
 			System.out.println("after subBytes");
 			for (byte[] arr : inputArray) {
-=======
 			for (byte[] arr : keyArray) {
->>>>>>> 948388a34141d544292bae8e186174c3c03af35a
 				System.out.println(Arrays.toString(arr));
 			}
 			
 			shiftRows();
 			System.out.println();
-<<<<<<< HEAD
 			System.out.println("after shiftRows");
 			for (byte[] arr : inputArray) {
 				System.out.println(Arrays.toString(arr));
