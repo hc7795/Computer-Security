@@ -5,7 +5,11 @@ import java.math.BigInteger;
 
 public class AES {
 	
+<<<<<<< HEAD
 	public static byte[][] inputArray = new byte[4][4];
+=======
+	public static byte[][] keyArray = new byte[4][4];
+>>>>>>> 948388a34141d544292bae8e186174c3c03af35a
 	
 	public static String[][] sbox =
 		 {{"63", "7C", "77", "7B", "F2", "6B", "6F", "C5", "30", "01", "67", "2B", "FE", "D7", "AB", "76"},
@@ -82,6 +86,7 @@ public class AES {
 					col = 0;
 					count = 0;
 				}
+<<<<<<< HEAD
 				//inputArray[row][col] = hex;
 				String hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(hex, 16))).replace(' ', '0');
 				System.out.println("hexInBinary = " + hexInBinary);
@@ -92,18 +97,35 @@ public class AES {
 				++col;
 			}
 			for (byte[] arr : inputArray) {
+=======
+				//keyArray[row][col] = hex;
+				String hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(hex, 16))).replace(' ', '0');
+				System.out.println("hexInBinary = " + hexInBinary);
+				byte binaryInByte = (byte)Integer.parseInt(hexInBinary, 2);
+				keyArray[row][col] = binaryInByte;
+				//keyArray[row][col] = Byte.valueOf(new BigInteger(hex,16).toString(2));
+				++count;
+				++col;
+			}
+			for (byte[] arr : keyArray) {
+>>>>>>> 948388a34141d544292bae8e186174c3c03af35a
 				System.out.println(Arrays.toString(arr));
 			}
 			
 			System.out.println();
 			subBytes();
+<<<<<<< HEAD
 			System.out.println("after subBytes");
 			for (byte[] arr : inputArray) {
+=======
+			for (byte[] arr : keyArray) {
+>>>>>>> 948388a34141d544292bae8e186174c3c03af35a
 				System.out.println(Arrays.toString(arr));
 			}
 			
 			shiftRows();
 			System.out.println();
+<<<<<<< HEAD
 			System.out.println("after shiftRows");
 			for (byte[] arr : inputArray) {
 				System.out.println(Arrays.toString(arr));
@@ -235,8 +257,63 @@ public static void mixColumns() {
 	for(int c = 0; c<4; c++) {
 		for(int row = 0; row<4; row++) {
 			a[row] = inputArray[row][c];
+=======
+			for (byte[] arr : keyArray) {
+				System.out.println(Arrays.toString(arr));
+			}
+			//System.out.println("sdghikfdhgkjfg = " + Integer.toHexString(keyArray[0][0]));
+>>>>>>> 948388a34141d544292bae8e186174c3c03af35a
 		}
 		
 	}
+	//taken from http://www.samiam.org/mix-column.html
+	public static void mixColumns() {
+		
+	}
+	
+	public static void shiftRows() {
+		byte temp = 0;
+		int k = 0;
+		for(int i=1; i<keyArray.length; i++) {
+			k = i;
+			while(k > 0) {
+				temp = keyArray[i][0];
+				for(int j = 1; j<keyArray[i].length; j++) {
+					keyArray[i][j-1] = keyArray[i][j];
+				}
+				keyArray[i][keyArray[i].length-1] = temp;
+				--k;
+			}
+		}
+	}
+	
+	public static void subBytes() {
+		byte hexByte = 0;
+		int unsignedByte = 0;
+		String hexString = "";
+		byte sboxValue = 0;
+		int row = 0;
+		int col = 0;
+		for(int i = 0; i<keyArray.length; i++) {
+			for(int j = 0; j<keyArray[i].length; j++) {
+				hexByte = keyArray[i][j];
+				if(hexByte < 0) {
+					unsignedByte = hexByte + 256;
+					hexString = Integer.toHexString(unsignedByte);
+				}
+				else
+					hexString = Integer.toHexString(hexByte);
+				if(hexString.length() == 1)
+					hexString = "0" + hexString;
+				//System.out.println("unsignedByte = " +  unsignedByte);
+				//System.out.println("hexString = " + hexString);
+				row = Integer.parseInt(Character.toString(hexString.charAt(0)), 16);
+				col = Integer.parseInt(Character.toString(hexString.charAt(1)), 16);
+				sboxValue = (byte) Integer.parseInt(sbox[row][col], 16);
+				keyArray[i][j] = sboxValue;
+			}
+		} 
+	}
+	
 }
 */
