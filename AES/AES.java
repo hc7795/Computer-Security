@@ -188,13 +188,17 @@ public class AES {
 	public static void addRoundKey() {
 		//byte[] keyColumn = new byte[4];
 		//byte[] inputColumn = new byte[4];
-		int i = 0;
 		String keyEle = "";
 		String inputEle = "";
 		String result = "";
 		for(int col=0; col<4; col++) {
-			i = 0;
 			for(int row = 0; row<4; row++) {
+				//System.out.println("keyArray[row][col] = " + keyArray[row][col]);
+				//System.out.println("inputArray[row][col] = " + inputArray[row][col]);
+				inputArray[row][col] = (byte)(keyArray[row][col]  ^ inputArray[row][col]);
+				//System.out.println("after, inputArray[row][col] = " + inputArray[row][col]);
+				
+				/*
 				keyEle = Integer.toHexString(keyArray[row][col] & 0xff);
 				inputEle = Integer.toHexString(inputArray[row][col] & 0xff);
 				if(keyEle.equals("0")) {
@@ -203,15 +207,21 @@ public class AES {
 				if(inputEle.equals("0")) {
 					inputEle = "00";
 				}
+				*/
+				
 				//System.out.println("keyEle = " + keyEle);
 				//System.out.println("inputEle = " + inputEle);
 				//String.format("%8s", Integer.toBinaryString(new BigInteger(keyEle,16))).replace(' ', '0');
+				
+				
+				/*
 				BigInteger keyNum = new BigInteger(keyEle,16);
 				BigInteger inputNum = new BigInteger(inputEle, 16);
 				result = keyNum.xor(inputNum).toString();
 				//System.out.println("result = " + result);
 				keyArray[row][col]  = (byte) (Integer.parseInt(result) & 0xff);
-				++i;
+				*/
+				//++i;
 			}
 		}
 	}
