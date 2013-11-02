@@ -26,6 +26,44 @@ public class AES {
 		  {"E1", "F8", "98", "11", "69", "D9", "8E", "94", "9B", "1E", "87", "E9", "CE", "55", "28", "DF"},
 		  {"8C", "A1", "89", "0D", "BF", "E6", "42", "68", "41", "99", "2D", "0F", "B0", "54", "BB", "16"}};
 	
+	public static String[][] inv_sbox = 
+		{
+		   {"52", "09", "6A", "D5", "30", "36", "A5", "38", "BF", "40", "A3", "9E", "81", "F3", "D7", "FB"},
+		   {"7C", "E3", "39", "82", "9B", "2F", "FF", "87", "34", "8E", "43", "44", "C4", "DE", "E9", "CB"},
+		   {"54", "7B", "94", "32", "A6", "C2", "23", "3D", "EE", "4C", "95", "0B", "42", "FA", "C3", "4E"},
+		   {"08", "2E", "A1", "66", "28", "D9", "24", "B2", "76", "5B", "A2", "49", "6D", "8B", "D1", "25"},
+		   {"72", "F8", "F6", "64", "86", "68", "98", "16", "D4", "A4", "5C", "CC", "5D", "65", "B6", "92"},
+		   {"6C", "70", "48", "50", "FD", "ED", "B9", "DA", "5E", "15", "46", "57", "A7", "8D", "9D", "84"},
+		   {"90", "D8", "AB", "00", "8C", "BC", "D3", "0A", "F7", "E4", "58", "05", "B8", "B3", "45", "06"},
+		   {"D0", "2C", "1E", "8F", "CA", "3F", "0F", "02", "C1", "AF", "BD", "03", "01", "13", "8A", "6B"},
+		   {"3A", "91", "11", "41", "4F", "67", "DC", "EA", "97", "F2", "CF", "CE", "F0", "B4", "E6", "73"},
+		   {"96", "AC", "74", "22", "E7", "AD", "35", "85", "E2", "F9", "37", "E8", "1C", "75", "DF", "6E"},
+		   {"47", "F1", "1A", "71", "1D", "29", "C5", "89", "6F", "B7", "62", "0E", "AA", "18", "BE", "1B"},
+		   {"FC", "56", "3E", "4B", "C6", "D2", "79", "20", "9A", "DB", "C0", "FE", "78", "CD", "5A", "F4"},
+		   {"1F", "DD", "A8", "33", "88", "07", "C7", "31", "B1", "12", "10", "59", "27", "80", "EC", "5F"},
+		   {"60", "51", "7F", "A9", "19", "B5", "4A", "0D", "2D", "E5", "7A", "9F", "93", "C9", "9C", "EF"},
+		   {"A0", "E0", "3B", "4D", "AE", "2A", "F5", "B0", "C8", "EB", "BB", "3C", "83", "53", "99", "61"},
+		   {"17", "2B", "04", "7E", "BA", "77", "D6", "26", "E1", "69", "14", "63", "55", "21", "0C", "7D"}
+		};
+	public static String[][] rcon = {
+			{"8d", "01", "02", "04", "08", "10", "20", "40", "80", "1b", "36", "6c", "d8", "ab", "4d", "9a"}, 
+			{"2f", "5e", "bc", "63", "c6", "97", "35", "6a", "d4", "b3", "7d", "fa", "ef", "c5", "91", "39"}, 
+			{"72", "e4", "d3", "bd", "61", "c2", "9f", "25", "4a", "94", "33", "66", "cc", "83", "1d", "3a"}, 
+			{"74", "e8", "cb", "8d", "01", "02", "04", "08", "10", "20", "40", "80", "1b", "36", "6c", "d8"}, 
+			{"ab", "4d", "9a", "2f", "5e", "bc", "63", "c6", "97", "35", "6a", "d4", "b3", "7d", "fa", "ef"}, 
+			{"c5", "91", "39", "72", "e4", "d3", "bd", "61", "c2", "9f", "25", "4a", "94", "33", "66", "cc"}, 
+			{"83", "1d", "3a", "74", "e8", "cb", "8d", "01", "02", "04", "08", "10", "20", "40", "80", "1b"}, 
+			{"36", "6c", "d8", "ab", "4d", "9a", "2f", "5e", "bc", "63", "c6", "97", "35", "6a", "d4", "b3"}, 
+			{"7d", "fa", "ef", "c5", "91", "39", "72", "e4", "d3", "bd", "61", "c2", "9f", "25", "4a", "94"}, 
+			{"33", "66", "cc", "83", "1d", "3a", "74", "e8", "cb", "8d", "01", "02", "04", "08", "10", "20"}, 
+			{"40", "80", "1b", "36", "6c", "d8", "ab", "4d", "9a", "2f", "5e", "bc", "63", "c6", "97", "35"}, 
+			{"6a", "d4", "b3", "7d", "fa", "ef", "c5", "91", "39", "72", "e4", "d3", "bd", "61", "c2", "9f"}, 
+			{"25", "4a", "94", "33", "66", "cc", "83", "1d", "3a", "74", "e8", "cb", "8d", "01", "02", "04"}, 
+			{"08", "10", "20", "40", "80", "1b", "36", "6c", "d8", "ab", "4d", "9a", "2f", "5e", "bc", "63"}, 
+			{"c6", "97", "35", "6a", "d4", "b3", "7d", "fa", "ef", "c5", "91", "39", "72", "e4", "d3", "bd"}, 
+			{"61", "c2", "9f", "25", "4a", "94", "33", "66", "cc", "83", "1d", "3a", "74", "e8", "cb", "8d}
+			};
+	
 	 final static int[] LogTable = {
 		    0,   0,  25,   1,  50,   2,  26, 198,  75, 199,  27, 104,  51, 238, 223,   3, 
 		    100,   4, 224,  14,  52, 141, 129, 239,  76, 113,   8, 200, 248, 105,  28, 193, 
@@ -79,16 +117,16 @@ public class AES {
 		int count = 0;
 		for(int i = 0; i<cipherKey.length()-1; i+=2) {
 			if(count ==4) {
-				++row;
-				col = 0;
+				++col;
+				row = 0;
 				count = 0;
 			}
 			key = cipherKey.substring(i, i+2);
 			//System.out.println("key = " + key);
 			hexInBinary = String.format("%8s", Integer.toBinaryString(Integer.parseInt(key, 16))).replace(' ', '0');
-			binaryInByte = (byte)Integer.parseInt(key, 2);
+			binaryInByte = (byte)Integer.parseInt(hexInBinary, 2);
 			keyArray[row][col] = binaryInByte;
-			++col;
+			++row;
 			++count;
 		}
         
@@ -104,8 +142,8 @@ public class AES {
 			for(int i=0; i<inputLine.length()-1; i+=2) {
 				hex = inputLine.substring(i, i+2);
 				if(count == 4) {
-					++row;
-					col = 0;
+					++col;
+					row = 0;
 					count = 0;
 				}
 				//inputArray[row][col] = hex;
@@ -116,7 +154,7 @@ public class AES {
 				inputArray[row][col] = binaryInByte;
 				//inputArray[row][col] = Byte.valueOf(new BigInteger(hex,16).toString(2));
 				++count;
-				++col;
+				++row;
 			}
 			
 			System.out.println("plain text is: ");
@@ -169,6 +207,7 @@ public class AES {
 			//System.out.println("sdghikfdhgkjfg = " + Integer.toHexString(inputArray[0][0]));
 		}
 	}
+	
 	public static void printHexNum (byte[][] twoDarr) {
 		String hex = "";
 		byte hexByte = 0;
@@ -191,12 +230,33 @@ public class AES {
 		String keyEle = "";
 		String inputEle = "";
 		String result = "";
+		int keyEleNum = 0;
+		int inputEleNum = 0;
 		for(int col=0; col<4; col++) {
 			for(int row = 0; row<4; row++) {
+				
 				//System.out.println("keyArray[row][col] = " + keyArray[row][col]);
 				//System.out.println("inputArray[row][col] = " + inputArray[row][col]);
-				inputArray[row][col] = (byte)(keyArray[row][col]  ^ inputArray[row][col]);
+				keyEle = Integer.toHexString(keyArray[row][col] & 0xff);
+				inputEle = Integer.toHexString(inputArray[row][col] & 0xff);
+				System.out.println("keyEle = " + keyEle + ", inputEle = " + inputEle);
+				keyEleNum = Integer.parseInt(keyEle, 16);
+				inputEleNum = Integer.parseInt(inputEle, 16);
+				inputArray[row][col] = (byte)(keyEleNum  ^ inputEleNum);
+				
+				
+				//String.format("%8s", Integer.toBinaryString(Integer.parseInt(key, 16))).replace(' ', '0');
+				//keyEle = String.format("%8s", Integer.toBinaryString(keyEleNum)).replace(' ', '0');
+				//System.out.println("*****keyEle = " + keyEle + ", inputEle = " + inputEle);
+				//inputEle = keyEle = String.format("%8s", Integer.toBinaryString(inputEleNum)).replace(' ', '0');
+				
+				//keyEleNum = Integer.parseInt(keyEle);
+				//inputEleNum = Integer.parseInt(inputEle);
+				
+				//System.out.println("$$$$$$$$keyEle = " + keyEle + ", inputEle = " + inputEle);
+				//System.out.println("keyEleNum = " + keyEleNum + ", inputEleNum = " + inputEleNum);
 				//System.out.println("after, inputArray[row][col] = " + inputArray[row][col]);
+				
 				/*
 				keyEle = Integer.toHexString(keyArray[row][col] & 0xff);
 				inputEle = Integer.toHexString(inputArray[row][col] & 0xff);
@@ -206,21 +266,17 @@ public class AES {
 				if(inputEle.equals("0")) {
 					inputEle = "00";
 				}
-				*/
-				//System.out.println("keyEle = " + keyEle);
-				//System.out.println("inputEle = " + inputEle);
-				//String.format("%8s", Integer.toBinaryString(new BigInteger(keyEle,16))).replace(' ', '0');
-				
-				
-				/*
+	
 				BigInteger keyNum = new BigInteger(keyEle,16);
 				BigInteger inputNum = new BigInteger(inputEle, 16);
+				//System.out.println("keyNum = " + keyNum + ", inputNum = " + inputNum);
 				result = keyNum.xor(inputNum).toString();
-				System.out.println("result = " + result);
-				keyArray[row][col] = Byte.valueOf(result, 16);
-				//keyArray[row][col]  = (byte) (Integer.parseInt(result) & 0xff);
-				*/
+				//System.out.println("result = " + result);
+				int i = Integer.parseInt(result, 16);
+				keyArray[row][col] = i < 128 ? (byte)i : (byte)(i - 256);
+				//keyArray[row][col]  = (byte) Integer.valueOf(result, 16).intValue();
 				//++i;
+				*/
 			}
 		}
 	}
@@ -270,7 +326,7 @@ public class AES {
 	    }
 	    else 
 	        return 0;
-	} // mul
+	}
 	
 	public static void shiftRows() {
 		byte temp = 0;
@@ -283,6 +339,22 @@ public class AES {
 					inputArray[i][j-1] = inputArray[i][j];
 				}
 				inputArray[i][inputArray[i].length-1] = temp;
+				--k;
+			}
+		}
+	}
+	public static void invShiftRows() {
+		byte temp = 0;
+		int k = 0;
+		for(int i=1; i<inputArray.length; i++) {
+			k = i;
+			while(k > 0) {
+				temp = inputArray[i][3];
+				for(int j = inputArray[i].length-1; j>0; j--) {
+					//inputArray[i][j-1] = inputArray[i][j];
+					inputArray[i][j] = inputArray[i][j-1];
+				}
+				inputArray[i][0] = temp;
 				--k;
 			}
 		}
@@ -311,6 +383,33 @@ public class AES {
 
 				//System.out.println("Integer.parseInt(sbox[row][col], 16) = " + Integer.parseInt(sbox[row][col], 16));
 				sboxValue = (byte) Integer.parseInt(sbox[row][col], 16);
+				inputArray[i][j] = sboxValue;
+			}
+		} 
+	}
+	public static void invSubBytes() {
+		byte hexByte = 0;
+		int unsignedByte = 0;
+		String hexString = "";
+		byte sboxValue = 0;
+		String hexInBinary = "";
+		int row = 0;
+		int col = 0;
+		byte unsigned = 0;
+		for(int i = 0; i<inputArray.length; i++) {
+			for(int j = 0; j<inputArray[i].length; j++) {
+				hexByte = inputArray[i][j];
+				hexString = Integer.toHexString(hexByte & 0xff);
+				if(hexString.length() == 1)
+					hexString = "0" + hexString;
+				//System.out.println("unsignedByte = " +  unsignedByte);
+				//System.out.println("hexString = " + hexString);
+				row = Integer.parseInt(Character.toString(hexString.charAt(0)), 16);
+				col = Integer.parseInt(Character.toString(hexString.charAt(1)), 16);
+				//System.out.println("row = " + row + ", col = " + col + ", sbox[row][col] = " + sbox[row][col]);
+
+				//System.out.println("Integer.parseInt(sbox[row][col], 16) = " + Integer.parseInt(sbox[row][col], 16));
+				sboxValue = (byte) Integer.parseInt(inv_sbox[row][col], 16);
 				inputArray[i][j] = sboxValue;
 			}
 		} 
