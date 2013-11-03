@@ -1,0 +1,26 @@
+Name: Honghui Choi
+UTEID: hc7795
+Email: chh8259@hotmail.com
+
+
+
+Encryption
+Total execution time: 0.059seconds
+Performance: 7.758706302966102E-4 MB/sec
+Performance: 6508.474576271186 bits/sec
+
+Decryption
+Total execution time: 0.043seconds
+Performance: 0.00106456667877907 MB/sec
+Performance: 8930.232558139536 bits/sec
+
+To run my program: 
+
+javac AES.java
+
+java AES e keyFile inputFile
+
+java AES d keyFile inputFile.enc
+
+
+If you do diff on inputFile and inputFile.enc.dec, it could complain if your inputFile is in uppercase. But the contents are the same.
