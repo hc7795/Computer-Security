@@ -33,18 +33,18 @@ public class PasswordCrack {
 		while(!users.isEmpty()) {
 			int round = 0;
 			for(int i = 0; i<users.size(); i++) {
-				dict.add(users.get(i).firstName.toLowerCase());
-				dict.add(users.get(i).lastName.toLowerCase());
+				dict.add(users.get(i).firstName);
+				dict.add(users.get(i).lastName);
 				for(int j =0; j < dict.size(); j++) {
 				
-					if(mangleAndCompare(users.get(i), dict.get(j), round) {
+					if(mangleAndCompare(users.get(i), dict.get(j), round)) {
 						users.remove(users.get(i));
 					}
 					
 				}
 				
-				dict.remove(users.get(i).firstName.toLowerCase());
-				dict.remove(users.get(i).lastName.toLowerCase());
+				dict.remove(users.get(i).firstName);
+				dict.remove(users.get(i).lastName);
 			}
 			++round;
 		}
@@ -52,7 +52,8 @@ public class PasswordCrack {
 	
 	public static boolean mangleAndCompare(User us, String dictEle, int round) {
 		while(round > 0) {
-			
+			Mangle mg = new Mangle(dictEle);
+			mg.runMangle();
 			--round;
 		}
 		
@@ -75,8 +76,7 @@ class User {
 	String encryptedPassword; 
 	String[] fullNameContainer = new String[2];
 	
-	public 
-	User(String inputLine) {
+	public User(String inputLine) {
 		//System.out.println(inputLine);
 		String[] inputParts = inputLine.split(":");
 		//System.out.println(Arrays.toString(inputParts));
@@ -85,8 +85,8 @@ class User {
 		
 		fullName = inputParts[4];
 		fullNameContainer = fullName.split(" ");
-		firstName = fullNameContainer[0];
-		lastName = fullNameContainer[1];
+		firstName = fullNameContainer[0].toLowerCase();
+		lastName = fullNameContainer[1].toLowerCase();
 		//System.out.println("first name = " + firstName + ", last name = " + lastName);
 		//System.out.println("salt = " + salt);
 	}
