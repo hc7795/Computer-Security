@@ -27,22 +27,24 @@ public class PasswordCrack {
 			users.add(us);
 		}
 		
-		
+		//System.out.println("hihihi");
 		boolean done = false;
-		
+		int resultIdx = 0;
+		int round = 0;
 		while(!users.isEmpty()) {
-			int round = 0;
 			for(int i = 0; i<users.size(); i++) {
+			//	System.out.println("********* i = " + i);
 				dict.add(users.get(i).firstName);
 				dict.add(users.get(i).lastName);
 				for(int j =0; j < dict.size(); j++) {
-				
-					if(mangleAndCompare(users.get(i), dict.get(j), round)) {
-						users.remove(users.get(i));
+					resultIdx = mangleAndCompare(i, users.get(i), dict.get(j), round, users);
+					if(resultIdx >= 0) {
+						users.remove(users.get(resultIdx));
+						if(resultIdx > 0)
+							--i;
 					}
 					
 				}
-				
 				dict.remove(users.get(i).firstName);
 				dict.remove(users.get(i).lastName);
 			}
@@ -50,21 +52,39 @@ public class PasswordCrack {
 		}
 	} 
 	
-	public static boolean mangleAndCompare(User us, String dictEle, int round) {
+	public static int mangleAndCompare(int index, User us, String dictEle, int round, ArrayList<User> users) {
+		ArrayList<String> dict = new ArrayList<String>();
+		dict.add(dictEle);
+		System.out.println("round = " + round);
 		while(round > 0) {
+			System.out.println("round > 0?");
 			Mangle mg = new Mangle(dictEle);
-			mg.runMangle();
+			dict = mg.runMangle(dictEle);
 			--round;
 		}
 		
 		String encryptedPass = "";
+		//System.out.println("dict.size() = " + dict.size());
 		for(int i = 0; i < dict.size(); i++) {
+			//System.out.println("inside mangleAndCompare");
 			encryptedPass = jcrypt.crypt(us.salt, dict.get(i));
-			if(encryptedPass.equals(us.encryptedPassword))
-				return true;
+			//System.out.println("encryptedPass = " + encryptedPass);
+			if(encryptedPass.equals(us.encryptedPassword)) {
+				System.out.println("found!!");
+				return index;
+			}
+//			else {
+//				for(int j =0; j<users.size(); j++) {
+//					encryptedPass = jcrypt.crypt(users.get(j).salt, dict.get(i));
+//					if(encryptedPass.equals(users.get(j).encryptedPassword)) {
+//						System.out.println("found!!");
+//						return j;
+//					}
+//				}
+//			}
 		}
 		
-		return false;
+		return -1;
 	}
 }
 

@@ -8,7 +8,7 @@ public class Mangle {
 		mangledList.add(dictEle);
 	}
 	
-	public static ArrayList<String> runMangle () {
+	public static ArrayList<String> runMangle (String dictEle) {
 		prepend(dictEle);
 		append(dictEle);
 		deleteFirstCharater(dictEle);
@@ -41,12 +41,12 @@ public class Mangle {
 		mangledList.add(dictEle.substring(1, dictEle.length()));
 	}
 	public static void deleteLastCharacter(String dictEle) {
-		mangledList.add(dictEle.substring(0, dicEle.length()-1));
+		mangledList.add(dictEle.substring(0, dictEle.length()-1));
 		
 	}
 	public static void reverse(String dictEle) {
 		dictEle = new StringBuffer(dictEle).reverse().toString();
-		mangledList.add(reversedStr);
+		mangledList.add(dictEle);
 	}
 	public static void duplicate(String dictEle) {
 		dictEle += dictEle;
@@ -74,23 +74,23 @@ public class Mangle {
 		mangledList.add(firstLetter + dictEle.substring(1, dictEle.length()));
 	}
 	public static void ncapitalize(String dictEle) {
-		String body = dictEle.substring(1,dictEle.length()).toUppoerCase();
+		String body = dictEle.substring(1,dictEle.length()).toUpperCase();
 		mangledList.add(dictEle.charAt(0) + body);
 	}
 	public static void toggle(String dictEle) {
 		String toggledStr = ""; 
 		for(int i = 0; i<dictEle.length(); i++) {
-			for(int j = 0; dictEle.length()-1; j++) {
+			for(int j = 0; j<dictEle.length()-1; j++) {
 				toggledStr = dictEle.substring(i, j+1).toUpperCase();
 				
 				if(i == 0) {
 					mangledList.add(toggledStr + dictEle.substring(j+1, dictEle.length()));
 				}
 				else if (i == 1){
-					mangedList.add(dictEle.substring(0, 1) + toggledStr + dictEle.substring(j+1, dictEle.length()));
+					mangledList.add(dictEle.substring(0, 1) + toggledStr + dictEle.substring(j+1, dictEle.length()));
 				}
 				else {
-					mangedList.add(dictEle.substring(0, i-1) + toggledStr + dictEle.substring(j+1, dictEle.length()));
+					mangledList.add(dictEle.substring(0, i-1) + toggledStr + dictEle.substring(j+1, dictEle.length()));
 				}
 			}
 		}
