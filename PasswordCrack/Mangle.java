@@ -80,7 +80,9 @@ public class Mangle {
 	public static void toggle(String dictEle) {
 		String toggledStr = ""; 
 		for(int i = 0; i<dictEle.length(); i++) {
-			for(int j = 0; j<dictEle.length()-1; j++) {
+			for(int j = i; j<dictEle.length()-1; j++) {
+				//System.out.println("i = " + i);
+				//System.out.println("j = " + j);
 				toggledStr = dictEle.substring(i, j+1).toUpperCase();
 				
 				if(i == 0) {

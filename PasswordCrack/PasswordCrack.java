@@ -37,10 +37,13 @@ public class PasswordCrack {
 				dict.add(users.get(i).firstName);
 				dict.add(users.get(i).lastName);
 				for(int j =0; j < dict.size(); j++) {
+					//System.out.println("i = " + i);
+					//System.out.println("j = " + j);
 					resultIdx = mangleAndCompare(i, users.get(i), dict.get(j), round, users);
 					if(resultIdx >= 0) {
+						System.out.println(users.get(resultIdx).fullName + " cracked");
 						users.remove(users.get(resultIdx));
-						if(resultIdx > 0)
+						if(i > 0)
 							--i;
 					}
 					
@@ -55,9 +58,9 @@ public class PasswordCrack {
 	public static int mangleAndCompare(int index, User us, String dictEle, int round, ArrayList<User> users) {
 		ArrayList<String> dict = new ArrayList<String>();
 		dict.add(dictEle);
-		System.out.println("round = " + round);
+		//System.out.println("round = " + round);
 		while(round > 0) {
-			System.out.println("round > 0?");
+			//System.out.println("round > 0?");
 			Mangle mg = new Mangle(dictEle);
 			dict = mg.runMangle(dictEle);
 			--round;
@@ -65,23 +68,25 @@ public class PasswordCrack {
 		
 		String encryptedPass = "";
 		//System.out.println("dict.size() = " + dict.size());
+		//System.out.println("dict.size() = " + dict.size());
 		for(int i = 0; i < dict.size(); i++) {
 			//System.out.println("inside mangleAndCompare");
 			encryptedPass = jcrypt.crypt(us.salt, dict.get(i));
 			//System.out.println("encryptedPass = " + encryptedPass);
 			if(encryptedPass.equals(us.encryptedPassword)) {
-				System.out.println("found!!");
+				System.out.println(us.encryptedPassword);
 				return index;
 			}
-//			else {
-//				for(int j =0; j<users.size(); j++) {
-//					encryptedPass = jcrypt.crypt(users.get(j).salt, dict.get(i));
-//					if(encryptedPass.equals(users.get(j).encryptedPassword)) {
-//						System.out.println("found!!");
-//						return j;
-//					}
-//				}
-//			}
+			else {
+				for(int j =0; j<users.size(); j++) {
+					encryptedPass = jcrypt.crypt(users.get(j).salt, dict.get(i));
+					if(encryptedPass.equals(users.get(j).encryptedPassword)) {
+						//System.out.println("found!!");
+						System.out.println(users.get(j).encryptedPassword);
+						return j;
+					}
+				}
+			}
 		}
 		
 		return -1;
