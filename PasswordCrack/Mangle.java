@@ -4,10 +4,11 @@ public class Mangle {
 
 	public static ArrayList<String> mangledList = new ArrayList<String>();
 	
+	
 	public Mangle(String dictEle) {
 		mangledList.add(dictEle);
 	}
-	
+		
 	public static ArrayList<String> runMangle (String dictEle) {
 		prepend(dictEle);
 		append(dictEle);
@@ -21,6 +22,14 @@ public class Mangle {
 		capitalize(dictEle);
 		ncapitalize(dictEle);
 		toggle(dictEle);
+		
+		String firstEight = "";
+		for(int i = 0; i < mangledList.size(); i++) {
+			if(mangledList.get(i).length() > 8) {
+				firstEight = mangledList.get(i).substring(0, 8);
+				mangledList.set(i, firstEight);
+			}
+		}
 		
 		return mangledList;
 	}

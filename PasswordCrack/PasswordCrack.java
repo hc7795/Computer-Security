@@ -2,7 +2,8 @@ import java.util.*;
 import java.io.*;
 public class PasswordCrack {
 	
-	//public static ArrayList<String> mangledDict = new ArrayList<String>();
+	public static ArrayList<String> mangledDict = new ArrayList<String>();
+	public static ArrayList<String> doubleMangledDict = new ArrayList<String>();
 	
 	public static void main(String[] args) throws IOException{
 		//System.out.println(jcrypt.crypt("(b","amazing"));
@@ -28,65 +29,104 @@ public class PasswordCrack {
 		}
 		
 		//System.out.println("hihihi");
+		
+		Mangle mg1 = new Mangle(dict.get(0));
+		for(int i = 0; i < dict.size(); i++) {
+			mangledDict.addAll(mg1.runMangle(dict.get(i)));
+		}
+		
+		System.out.println(mangledDict.size());
+		
+		Mangle mg2 = new Mangle(mangledDict.get(0));
+		for(int i = 0; i < mangledDict.size(); i++) {
+			doubleMangledDict.addAll(mg2.runMangle(mangledDict.get(i)));
+		}
+		
+		System.out.println("here?");
+		ArrayList<String> userDict = new ArrayList<String>();
+				
 		boolean done = false;
 		int resultIdx = 0;
 		int round = 0;
 		while(!users.isEmpty()) {
 			for(int i = 0; i<users.size(); i++) {
 			//	System.out.println("********* i = " + i);
-				dict.add(users.get(i).firstName);
-				dict.add(users.get(i).lastName);
-				for(int j =0; j < dict.size(); j++) {
-					//System.out.println("i = " + i);
-					//System.out.println("j = " + j);
-					resultIdx = mangleAndCompare(i, users.get(i), dict.get(j), round, users);
-					if(resultIdx >= 0) {
-						System.out.println(users.get(resultIdx).fullName + " cracked");
-						users.remove(users.get(resultIdx));
-						if(i > 0)
-							--i;
-					}
-					
+				userDict.add(users.get(i).firstName);
+				userDict.add(users.get(i).lastName);
+
+				resultIdx = mangleAndCompare(i, users.get(i), userDict, round, users);
+				
+				if(resultIdx >= 0) {
+					System.out.println(users.get(resultIdx).fullName + " cracked");
+					users.remove(users.get(resultIdx));
+					if(i > 0)
+						--i;
 				}
-				dict.remove(users.get(i).firstName);
-				dict.remove(users.get(i).lastName);
+					
+				userDict.remove(users.get(i).firstName);
+				userDict.remove(users.get(i).lastName);
 			}
-			++round;
+			if(round < 3) {
+				++round;
+			}
 		}
-	} 
+	}
 	
-	public static int mangleAndCompare(int index, User us, String dictEle, int round, ArrayList<User> users) {
-		ArrayList<String> dict = new ArrayList<String>();
-		dict.add(dictEle);
-		//System.out.println("round = " + round);
+	
+	public static int mangleAndCompare(int index, User us, ArrayList<String> userDict, int round, ArrayList<User> users) {
+		int roundOrg = round;
+		ArrayList<String> namesMangled = new ArrayList<String>();
+		String encryptedPass = "";
+
 		while(round > 0) {
 			//System.out.println("round > 0?");
-			Mangle mg = new Mangle(dictEle);
-			dict = mg.runMangle(dictEle);
+			for(int i =0; i < userDict.size(); i++) {
+				Mangle mg = new Mangle(userDict.get(i));
+				namesMangled.addAll(mg.runMangle(userDict.get(i)));
+			}
 			--round;
 		}
 		
-		String encryptedPass = "";
-		//System.out.println("dict.size() = " + dict.size());
-		//System.out.println("dict.size() = " + dict.size());
-		for(int i = 0; i < dict.size(); i++) {
-			//System.out.println("inside mangleAndCompare");
-			encryptedPass = jcrypt.crypt(us.salt, dict.get(i));
-			//System.out.println("encryptedPass = " + encryptedPass);
-			if(encryptedPass.equals(us.encryptedPassword)) {
-				System.out.println(us.encryptedPassword);
-				return index;
-			}
-			else {
-				for(int j =0; j<users.size(); j++) {
-					encryptedPass = jcrypt.crypt(users.get(j).salt, dict.get(i));
-					if(encryptedPass.equals(users.get(j).encryptedPassword)) {
-						//System.out.println("found!!");
-						System.out.println(users.get(j).encryptedPassword);
-						return j;
+		if(roundOrg == 1) {
+			mangledDict.addAll(namesMangled);
+			
+			for(int i = 0; i < mangledDict.size(); i++) {
+				encryptedPass = jcrypt.crypt(us.salt, mangledDict.get(i));
+				if(encryptedPass.equals(us.encryptedPassword)) {
+					System.out.println(us.encryptedPassword);
+					return index;
+				}
+				else {
+					for(int j =0; j<users.size(); j++) {
+						encryptedPass = jcrypt.crypt(users.get(j).salt, mangledDict.get(i));
+						if(encryptedPass.equals(users.get(j).encryptedPassword)) {
+							System.out.println(users.get(j).encryptedPassword);
+							return j;
+						}
 					}
 				}
 			}
+			
+		}
+		else if(roundOrg == 2) {
+			doubleMangledDict.addAll(namesMangled);
+			
+			for(int i = 0; i < doubleMangledDict.size(); i++) {
+				encryptedPass = jcrypt.crypt(us.salt, doubleMangledDict.get(i));
+				if(encryptedPass.equals(us.encryptedPassword)) {
+					System.out.println(us.encryptedPassword);
+					return index;
+				}
+				else {
+					for(int j =0; j<users.size(); j++) {
+						encryptedPass = jcrypt.crypt(users.get(j).salt, doubleMangledDict.get(i));
+						if(encryptedPass.equals(users.get(j).encryptedPassword)) {
+							System.out.println(users.get(j).encryptedPassword);
+							return j;
+						}
+					}
+				}
+			}	
 		}
 		
 		return -1;
