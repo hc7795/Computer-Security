@@ -37,6 +37,7 @@ public class PasswordCrack {
 		while(!users.isEmpty()) {
 			for(int i = 0; i<users.size(); i++) {
 			//	System.out.println("********* i = " + i);
+<<<<<<< HEAD
 				firstName = users.get(i).firstName;
 				lastName = users.get(i).lastName;
 				
@@ -74,6 +75,26 @@ public class PasswordCrack {
 				
 				dict.remove(firstName);
 				dict.remove(lastName);
+=======
+				dict.add(users.get(i).firstName);
+				dict.add(users.get(i).lastName);
+				for(int j =0; j < dict.size(); j++) {
+					//System.out.println("i = " + i);
+					//System.out.println("j = " + j);
+					resultIdx = mangleAndCompare(i, users.get(i), dict.get(j), round, users);
+					if(resultIdx >= 0) {
+						System.out.println(users.get(resultIdx).fullName + " cracked");
+						users.remove(users.get(resultIdx));
+						if(i > 0)
+							--i;
+					}
+				}
+				dict.remove(users.get(i).firstName);
+				dict.remove(users.get(i).lastName);
+			}
+			if(round < 3) {
+				++round;
+>>>>>>> c40520d0145d8b0faeba9ae6bd0b1906fa17e55e
 			}
 			++round;
 		}
@@ -83,6 +104,7 @@ public class PasswordCrack {
 		ArrayList<String> dict = new ArrayList<String>();
 		dict.add(dictEle);
 		//System.out.println("round = " + round);
+<<<<<<< HEAD
 		
 		Mangle mg = new Mangle(dictEle);
 		int dictSize = dict.size();
@@ -97,10 +119,17 @@ public class PasswordCrack {
 			//System.out.println("for loop ended");
 			dictSize = dict.size();
 			//System.out.println("round = " + round +", dict.size() = "+ dict.size());
+=======
+		while(round > 0) {
+			//System.out.println("round > 0?");
+			Mangle mg = new Mangle(dictEle);
+			dict = mg.runMangle(dictEle);
+>>>>>>> c40520d0145d8b0faeba9ae6bd0b1906fa17e55e
 			--round;
 		}
 		
 		String encryptedPass = "";
+<<<<<<< HEAD
 		//System.out.println("dict.size() = " + dict.size() + ", dictEle = " + dictEle);
 		for(int i = 0; i < dict.size(); i++) {
 			//System.out.println("inside mangleAndCompare");
@@ -111,11 +140,27 @@ public class PasswordCrack {
 			}
 			else {
 				//System.out.println("inside else");
+=======
+		//System.out.println("dict.size() = " + dict.size());
+		for(int i = 0; i < dict.size(); i++) {
+			//System.out.println("inside mangleAndCompare");
+			encryptedPass = jcrypt.crypt(us.salt, dict.get(i));
+			//System.out.println("encryptedPass = " + encryptedPass);
+			if(encryptedPass.equals(us.encryptedPassword)) {
+				System.out.println(us.encryptedPassword);
+				return index;
+			}
+			else {
+>>>>>>> c40520d0145d8b0faeba9ae6bd0b1906fa17e55e
 				for(int j =0; j<users.size(); j++) {
 					encryptedPass = jcrypt.crypt(users.get(j).salt, dict.get(i));
 					if(encryptedPass.equals(users.get(j).encryptedPassword)) {
 						//System.out.println("found!!");
+<<<<<<< HEAD
 						//System.out.println(users.get(j).encryptedPassword);
+=======
+						System.out.println(users.get(j).encryptedPassword);
+>>>>>>> c40520d0145d8b0faeba9ae6bd0b1906fa17e55e
 						return j;
 					}
 				}
@@ -148,4 +193,8 @@ class User {
 		//System.out.println("salt = " + salt);
 	}
 	
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> c40520d0145d8b0faeba9ae6bd0b1906fa17e55e
