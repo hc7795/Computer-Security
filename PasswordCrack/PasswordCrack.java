@@ -1,9 +1,9 @@
 import java.util.*;
 import java.io.*;
+
 public class PasswordCrack {
 	
-	public static ArrayList<String> mangledDict = new ArrayList<String>();
-	public static ArrayList<String> doubleMangledDict = new ArrayList<String>();
+	//public static ArrayList<String> mangledDict = new ArrayList<String>();
 	
 	public static void main(String[] args) throws IOException{
 		//System.out.println(jcrypt.crypt("(b","amazing"));
@@ -29,106 +29,98 @@ public class PasswordCrack {
 		}
 		
 		//System.out.println("hihihi");
-		
-		Mangle mg1 = new Mangle(dict.get(0));
-		for(int i = 0; i < dict.size(); i++) {
-			mangledDict.addAll(mg1.runMangle(dict.get(i)));
-		}
-		
-		System.out.println(mangledDict.size());
-		
-		Mangle mg2 = new Mangle(mangledDict.get(0));
-		for(int i = 0; i < mangledDict.size(); i++) {
-			doubleMangledDict.addAll(mg2.runMangle(mangledDict.get(i)));
-		}
-		
-		System.out.println("here?");
-		ArrayList<String> userDict = new ArrayList<String>();
-				
 		boolean done = false;
 		int resultIdx = 0;
 		int round = 0;
+		String firstName = "";
+		String lastName = "";
 		while(!users.isEmpty()) {
 			for(int i = 0; i<users.size(); i++) {
 			//	System.out.println("********* i = " + i);
-				userDict.add(users.get(i).firstName);
-				userDict.add(users.get(i).lastName);
-
-				resultIdx = mangleAndCompare(i, users.get(i), userDict, round, users);
+				firstName = users.get(i).firstName;
+				lastName = users.get(i).lastName;
 				
-				if(resultIdx >= 0) {
-					System.out.println(users.get(resultIdx).fullName + " cracked");
-					users.remove(users.get(resultIdx));
-					if(i > 0)
-						--i;
+				dict.add(firstName);
+				dict.add(lastName);
+				
+				if(i==0) {
+					for(int j =0; j < dict.size(); j++) {
+						//System.out.println("i = " + i);
+						//System.out.println("j = " + j);
+						//System.out.println("i == 0, and round = " + round + ", j = " + j + ", dict.size() = " + dict.size());
+						resultIdx = mangleAndCompare(i, users.get(i), dict.get(j), round, users);
+						if(resultIdx >= 0) {
+							System.out.println(users.get(resultIdx).fullName + " cracked");
+							users.remove(users.get(resultIdx));
+							if(i > 0)
+								--i;
+						}
+					}
 				}
-					
-				userDict.remove(users.get(i).firstName);
-				userDict.remove(users.get(i).lastName);
+				else {
+					//System.out.println("else part");
+					for(int k = dict.size()-2; k<dict.size(); k++) {
+						//System.out.println("i ==  " + i + ", else" + ", round = " + round);
+						resultIdx = mangleAndCompare(i, users.get(i), dict.get(k), round, users);
+						
+						if(resultIdx >= 0) {
+							System.out.println(users.get(resultIdx).fullName + " cracked");
+							users.remove(users.get(resultIdx));
+							if(i > 0)
+								--i;
+						}
+					}
+				}
+				
+				dict.remove(firstName);
+				dict.remove(lastName);
 			}
-			if(round < 3) {
-				++round;
-			}
+			++round;
 		}
-	}
+	} 
 	
-	
-	public static int mangleAndCompare(int index, User us, ArrayList<String> userDict, int round, ArrayList<User> users) {
-		int roundOrg = round;
-		ArrayList<String> namesMangled = new ArrayList<String>();
-		String encryptedPass = "";
-
+	public static int mangleAndCompare(int index, User us, String dictEle, int round, ArrayList<User> users) {
+		ArrayList<String> dict = new ArrayList<String>();
+		dict.add(dictEle);
+		//System.out.println("round = " + round);
+		
+		Mangle mg = new Mangle(dictEle);
+		int dictSize = dict.size();
 		while(round > 0) {
 			//System.out.println("round > 0?");
-			for(int i =0; i < userDict.size(); i++) {
-				Mangle mg = new Mangle(userDict.get(i));
-				namesMangled.addAll(mg.runMangle(userDict.get(i)));
+			
+			//System.out.println("round = " + round + "dict size = " + dict.size());
+			for(int i =0; i < dictSize; i++) {
+				dict.addAll(mg.runMangle(dict.get(i)));
 			}
+			//System.out.println("after round = " + round + "dict size = " + dict.size());
+			//System.out.println("for loop ended");
+			dictSize = dict.size();
+			//System.out.println("round = " + round +", dict.size() = "+ dict.size());
 			--round;
 		}
 		
-		if(roundOrg == 1) {
-			mangledDict.addAll(namesMangled);
-			
-			for(int i = 0; i < mangledDict.size(); i++) {
-				encryptedPass = jcrypt.crypt(us.salt, mangledDict.get(i));
-				if(encryptedPass.equals(us.encryptedPassword)) {
-					System.out.println(us.encryptedPassword);
-					return index;
-				}
-				else {
-					for(int j =0; j<users.size(); j++) {
-						encryptedPass = jcrypt.crypt(users.get(j).salt, mangledDict.get(i));
-						if(encryptedPass.equals(users.get(j).encryptedPassword)) {
-							System.out.println(users.get(j).encryptedPassword);
-							return j;
-						}
+		String encryptedPass = "";
+		//System.out.println("dict.size() = " + dict.size() + ", dictEle = " + dictEle);
+		for(int i = 0; i < dict.size(); i++) {
+			//System.out.println("inside mangleAndCompare");
+			encryptedPass = jcrypt.crypt(us.salt, dict.get(i));
+			if(encryptedPass.equals(us.encryptedPassword)) {
+				//System.out.println(us.encryptedPassword);
+				return index;
+			}
+			else {
+				//System.out.println("inside else");
+				for(int j =0; j<users.size(); j++) {
+					encryptedPass = jcrypt.crypt(users.get(j).salt, dict.get(i));
+					if(encryptedPass.equals(users.get(j).encryptedPassword)) {
+						//System.out.println("found!!");
+						//System.out.println(users.get(j).encryptedPassword);
+						return j;
 					}
 				}
 			}
-			
 		}
-		else if(roundOrg == 2) {
-			doubleMangledDict.addAll(namesMangled);
-			
-			for(int i = 0; i < doubleMangledDict.size(); i++) {
-				encryptedPass = jcrypt.crypt(us.salt, doubleMangledDict.get(i));
-				if(encryptedPass.equals(us.encryptedPassword)) {
-					System.out.println(us.encryptedPassword);
-					return index;
-				}
-				else {
-					for(int j =0; j<users.size(); j++) {
-						encryptedPass = jcrypt.crypt(users.get(j).salt, doubleMangledDict.get(i));
-						if(encryptedPass.equals(users.get(j).encryptedPassword)) {
-							System.out.println(users.get(j).encryptedPassword);
-							return j;
-						}
-					}
-				}
-			}	
-		}
-		
 		return -1;
 	}
 }
@@ -157,4 +149,3 @@ class User {
 	}
 	
 }
-

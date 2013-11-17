@@ -2,10 +2,11 @@ import java.util.ArrayList;
 
 public class Mangle {
 
-	public static ArrayList<String> mangledList = new ArrayList<String>();
+	public static ArrayList<String> mangledList;
 	
 	
 	public Mangle(String dictEle) {
+		mangledList = new ArrayList<String>();
 		mangledList.add(dictEle);
 	}
 		
@@ -89,7 +90,7 @@ public class Mangle {
 	public static void toggle(String dictEle) {
 		String toggledStr = ""; 
 		for(int i = 0; i<dictEle.length(); i++) {
-			for(int j = i; j<dictEle.length()-1; j++) {
+			for(int j = i; j<dictEle.length(); j++) {
 				//System.out.println("i = " + i);
 				//System.out.println("j = " + j);
 				toggledStr = dictEle.substring(i, j+1).toUpperCase();
@@ -101,7 +102,7 @@ public class Mangle {
 					mangledList.add(dictEle.substring(0, 1) + toggledStr + dictEle.substring(j+1, dictEle.length()));
 				}
 				else {
-					mangledList.add(dictEle.substring(0, i-1) + toggledStr + dictEle.substring(j+1, dictEle.length()));
+					mangledList.add(dictEle.substring(0, i) + toggledStr + dictEle.substring(j+1, dictEle.length()));
 				}
 			}
 		}
