@@ -46,23 +46,26 @@ public class ACS {
 		lineArr2 = fileListRd.nextLine().split(" ");
 		fileList.put(lineArr2[0], new String[]{lineArr2[1], lineArr2[2]});
 	}
-        action(inputArr);
+        
+        
+        System.out.println(userList.get("user2"));
+        System.out.println(Arrays.toString(fileList.get("file2")));
+        //action(inputArr);
         
 	}
-	
+	/*
 	public static void action(String[] inputArr) {
 		String action = inputArr[0];
 		String user = inputArr[1];
 		String file = inputArr[2];
-		String mode = "";
 		
 		if(inputArr[0].equals("CHMOD")) {
 			
 		}
 		else { //READ, WRITE, EXECUTE
-			mode = fileList.get(file)[1];
 			
 		}
 		
 	}
+	*/
 }
