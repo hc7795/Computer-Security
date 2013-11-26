@@ -83,7 +83,10 @@ public class PasswordCrack {
 		ArrayList<String> dict = new ArrayList<String>();
 		dict.add(dictEle);
 		//System.out.println("round = " + round);
+<<<<<<< HEAD
 		ArrayList<String> temp = new ArrayList<String>();
+=======
+>>>>>>> 0a47e64e2fa0698751de476904552db7a05dc155
 		
 
 		int dictSize = dict.size();
