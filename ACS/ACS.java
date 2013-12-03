@@ -15,27 +15,17 @@ public class ACS {
 		String[] inputArr = new String[]{"","","",""};
 		String input = "";
 	        
-	    if(args.length > 2) { // if -r is given
-	    	rootUser = false;
+		if(args.length > 2) { // if -r is given
+			rootUser = false;
 			userListFile = new File(args[1]);
 			fileListFile = new File(args[2]);
-			//userList.put("root", );
-			//fileList.put(key, value);
-			//takes an input NEED TO MOVE THAT, IT ONLY WORKS FOR THE FIRST TIME
-			System.out.println("Input: ");
-			input = sc.nextLine();
-			inputArr = input.split(" ");
-			if(inputArr[1].equals("root")) {
-				System.out.println("Output:");
-				System.out.println(inputArr[0] + " root root 0");
-			}
-	    }
-	    else {
-	    	rootUser = true;
-	    	userList.put("root", "root");
+		}
+		else {
+			rootUser = true;
+			userList.put("root", "root");
 			userListFile = new File(args[0]);
 			fileListFile = new File(args[1]);
-	    }
+		}
 	        
 		Scanner userListRd = new Scanner(userListFile);
 		Scanner fileListRd = new Scanner(fileListFile);
@@ -57,7 +47,11 @@ public class ACS {
 			System.out.println("Input: ");
 			input = sc.nextLine();
 			inputArr = input.split(" ");
-			if(inputArr.length >= 3) 
+			if(inputArr[1].equals("root") && !rootUser) {
+				System.out.println("Output:");
+				System.out.println(inputArr[0] + " root root 0");
+			}
+			else if(inputArr.length >= 3) 
 				action(inputArr);
 		}
 	}
