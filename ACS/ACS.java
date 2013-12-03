@@ -5,6 +5,7 @@ public class ACS {
 	
 	public static HashMap<String, String> userList = new HashMap<String, String>();
 	public static HashMap<String, String[]> fileList = new HashMap<String, String[]>();
+	public static boolean rootUser = true;
 	
 	public static void main(String[] args) throws IOException{
 		File userListFile;
@@ -15,11 +16,13 @@ public class ACS {
 		String input = "";
 	        
 	    if(args.length > 2) { // if -r is given
+	    	rootUser = false;
 			userListFile = new File(args[1]);
 			fileListFile = new File(args[2]);
 			//userList.put("root", );
 			//fileList.put(key, value);
-			//takes an input
+			//takes an input NEED TO MOVE THAT, IT ONLY WORKS FOR THE FIRST TIME
+			System.out.println("Input: ");
 			input = sc.nextLine();
 			inputArr = input.split(" ");
 			if(inputArr[1].equals("root")) {
@@ -28,6 +31,8 @@ public class ACS {
 			}
 	    }
 	    else {
+	    	rootUser = true;
+	    	userList.put("root", "root");
 			userListFile = new File(args[0]);
 			fileListFile = new File(args[1]);
 	    }
@@ -85,13 +90,14 @@ public class ACS {
 			isRunningGroup = false;
 			running_group = userList.get(fileList.get(file)[0]);
 		}
+		
 		if(!user.equals(fileList.get(file)[0]))
 			isOwner = false;
 		
 		
 		String[] temp = new String[2];
 		if(action.equals("CHMOD")) {
-			if(isOwner) {
+			if(isOwner || (rootUser && user.equals("root"))) {
 				temp = fileList.get(file);
 				temp[1] = chmod;
 				fileList.put(file, temp);
@@ -106,15 +112,15 @@ public class ACS {
 			System.out.println("modeStr = " + modeStr);
 			
 			if(action.equals("READ")){
-				if(modeStr.charAt(0) == 'r' || modeStr.charAt(3) == 'r' || modeStr.charAt(6) == 'r')
+				if(modeStr.charAt(0) == 'r' || modeStr.charAt(3) == 'r' || modeStr.charAt(6) == 'r' || (rootUser && user.equals("root")))
 					System.out.println(action + " " + running_user +" "+ running_group +" 1");
 			}
 			else if(action.equals("WRITE")){ //WRITE
-				if(modeStr.charAt(1) == 'w' || modeStr.charAt(4) == 'w' || modeStr.charAt(7) == 'w')
+				if(modeStr.charAt(1) == 'w' || modeStr.charAt(4) == 'w' || modeStr.charAt(7) == 'w' || (rootUser && user.equals("root")))
 					System.out.println(action + " " + running_user +" "+ running_group +" 1");
 			}
 			else { //EXECUTE
-				if(modeStr.charAt(2) != '-' || modeStr.charAt(5) != '-' || modeStr.charAt(8) != '-')
+				if(modeStr.charAt(2) != '-' || modeStr.charAt(5) != '-' || modeStr.charAt(8) != '-' || (rootUser && user.equals("root")))
 					System.out.println(action + " " + running_user +" "+ running_group +" 1");
 			}
 
