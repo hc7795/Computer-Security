@@ -42,10 +42,13 @@ public class ACS {
 			fileList.put(lineArr2[0], new String[]{lineArr2[1], lineArr2[2]});
 		}
 		
+		
 		//System.out.println("inputArr = " + Arrays.toString(inputArr));
-		while(!input.equals("EXIT")) {
+		while(!input.equals("EXIT") || !input.equals("exit")) {
 			System.out.println("Input: ");
 			input = sc.nextLine();
+			if(input.equals("EXIT") || input.equals("exit"))
+				break;
 			inputArr = input.split(" ");
 			if(inputArr[1].equals("root") && !rootUser) {
 				System.out.println("Output:");
@@ -53,7 +56,30 @@ public class ACS {
 			}
 			else if(inputArr.length >= 3) 
 				action(inputArr);
+			System.out.println();
 		}
+		
+		//Create a file and a bw object.    mode owner ownergroup filename
+		File stateFile = new File("state.log");
+		BufferedWriter bw = new BufferedWriter(new FileWriter(stateFile));
+		String mode = "";
+		String owner = "";
+		String ownergroup = "";
+		for (Map.Entry<String, String[]> entry : fileList.entrySet()) {
+			String binaryStr = "";
+		    String key = entry.getKey(); //filename;
+		    String[] value = entry.getValue();
+		    mode = value[1];
+		    for(int i = 0; i<mode.length(); i++) {
+				binaryStr += String.format("%3s", Integer.toBinaryString(Character.getNumericValue(mode.charAt(i)))).replace(' ', '0');
+			}
+		    mode = modeToString(binaryStr);
+		    owner = value[0];
+		    ownergroup = userList.get(owner);
+		    bw.write(mode + " " + owner + " " + ownergroup + " " + key);
+		    bw.newLine();
+		}
+		bw.close();
 	}
 
 	public static void action(String[] inputArr) {
@@ -69,7 +95,9 @@ public class ACS {
 		String running_group = userList.get(user);
 		boolean isRunningUser = true;
 		boolean isRunningGroup = true;
+		
 		boolean isOwner = true;
+		boolean isGroup = true;
 		String modeStr = "";
 		
 		mode = fileList.get(file)[1];
@@ -87,10 +115,12 @@ public class ACS {
 		
 		if(!user.equals(fileList.get(file)[0]))
 			isOwner = false;
-		
+		if(!userList.get(user).equals(userList.get(fileList.get(file)[0])))
+			isGroup = false;
 		
 		String[] temp = new String[2];
-		if(action.equals("CHMOD")) {
+		System.out.println("output:");
+		if(action.equals("CHMOD") || action.equals("chmod")) {
 			if(isOwner || (rootUser && user.equals("root"))) {
 				temp = fileList.get(file);
 				temp[1] = chmod;
@@ -103,21 +133,39 @@ public class ACS {
 		else { //READ, WRITE, EXECUTE
 			
 			modeStr = modeToString(binaryStr);
-			System.out.println("modeStr = " + modeStr);
+			//System.out.println("modeStr = " + modeStr);
 			
-			if(action.equals("READ")){
-				if(modeStr.charAt(0) == 'r' || modeStr.charAt(3) == 'r' || modeStr.charAt(6) == 'r' || (rootUser && user.equals("root")))
+			if(action.equals("READ") || action.equals("read")){				
+				if((isOwner && modeStr.charAt(0) == 'r') || (rootUser && user.equals("root")))
 					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else if(isGroup && modeStr.charAt(3) == 'r')
+					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else if(modeStr.charAt(6) == 'r')
+					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else
+					System.out.println(action + " " + running_user +" "+ running_group +" 0");
 			}
-			else if(action.equals("WRITE")){ //WRITE
-				if(modeStr.charAt(1) == 'w' || modeStr.charAt(4) == 'w' || modeStr.charAt(7) == 'w' || (rootUser && user.equals("root")))
+			else if(action.equals("WRITE") || action.equals("write")){ //WRITE
+				if((isOwner && modeStr.charAt(1) == 'w') || (rootUser && user.equals("root")))
 					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else if(isGroup && modeStr.charAt(4) == 'w')
+					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else if(modeStr.charAt(7) == 'w')
+					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else
+					System.out.println(action + " " + running_user +" "+ running_group +" 0");
+					
 			}
 			else { //EXECUTE
-				if(modeStr.charAt(2) != '-' || modeStr.charAt(5) != '-' || modeStr.charAt(8) != '-' || (rootUser && user.equals("root")))
+				if((isOwner && modeStr.charAt(2) == 'e') || (rootUser && user.equals("root")))
 					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else if(isGroup && modeStr.charAt(5) == 'e')
+					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else if(modeStr.charAt(8) == 'e')
+					System.out.println(action + " " + running_user +" "+ running_group +" 1");
+				else
+					System.out.println(action + " " + running_user +" "+ running_group +" 0");
 			}
-
 		}	
 	}
 	
