@@ -47,9 +47,25 @@ public class ACS {
 		while(!input.equals("EXIT") || !input.equals("exit")) {
 			System.out.println("Input: ");
 			input = sc.nextLine();
+			
 			if(input.equals("EXIT") || input.equals("exit"))
 				break;
 			inputArr = input.split(" ");
+			
+			//when user is not found
+			while(!userList.containsKey(inputArr[1])) {
+				System.out.println("No such user is found. Please try again: ");
+				input = sc.nextLine();
+				inputArr = input.split(" ");
+			}
+			//when file is not found
+			while(!fileList.containsKey(inputArr[2])) {
+				System.out.println("No such file is found. Please try again: ");
+				input = sc.nextLine();
+				inputArr = input.split(" ");
+			}
+			
+			
 			if(inputArr[1].equals("root") && !rootUser) {
 				System.out.println("Output:");
 				System.out.println(inputArr[0] + " root root 0");
