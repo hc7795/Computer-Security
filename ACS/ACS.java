@@ -53,7 +53,7 @@ public class ACS {
 			inputArr = input.split(" ");
 			
 			//when user is not found
-			while(!userList.containsKey(inputArr[1])) {
+			while(!userList.containsKey(inputArr[1]) && !inputArr[1].equals("root")) {
 				System.out.println("No such user is found. Please try again: ");
 				input = sc.nextLine();
 				inputArr = input.split(" ");
